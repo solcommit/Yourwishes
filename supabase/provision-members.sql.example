@@ -1,0 +1,11 @@
+-- Run ONLY as an administrator in Dashboard SQL Editor, after both migrations.
+-- Substitute the two Auth user UUIDs. Never put passwords or keys in this file.
+-- Run once; existing rows deliberately cause failure instead of silently re-pairing.
+begin;
+insert into public.app_members (user_id, slot) values
+  ('9bbadba4-f033-4e27-8ce1-ae00510571d8'::uuid, 'A'),
+  ('Re4d69dc0-b62b-4551-b8d6-27823061fbed'::uuid, 'B');
+insert into public.profiles (id, nickname)
+select user_id, case slot when 'A' then 'You' else 'Partner' end
+from public.app_members;
+commit;

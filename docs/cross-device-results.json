@@ -1,0 +1,1118 @@
+{
+  "date": "2026-10-23",
+  "environment": "macOS; synthetic fixture data except three read-only live-auth checks",
+  "browsers": [
+    {
+      "name": "chromium",
+      "revision": "1248",
+      "browserVersion": "156.0.8078.4"
+    },
+    {
+      "name": "firefox",
+      "revision": "1555",
+      "browserVersion": "157.0"
+    },
+    {
+      "name": "webkit",
+      "revision": "2370",
+      "browserVersion": "27.2"
+    }
+  ],
+  "runs": {
+    "cross-device-development": {
+      "passed": 42,
+      "skipped": 18
+    },
+    "cross-device-production": {
+      "passed": 42,
+      "skipped": 18
+    },
+    "cross-device-development-wheel": {
+      "passed": 30
+    },
+    "cross-device-production-wheel": {
+      "passed": 30
+    },
+    "cross-browser-images": {
+      "passed": 15
+    },
+    "cross-device-live-auth": {
+      "passed": 3
+    }
+  },
+  "existingIsolatedRegressionRun": {
+    "passed": 15,
+    "note": "Validation/cache/synchronization and five Chromium image cases, prior to the cross-browser image run; image cases overlap."
+  },
+  "controls": [
+    {
+      "engine": "chromium",
+      "mode": "development",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "chromium",
+      "mode": "development",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "chromium",
+      "mode": "production",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "chromium",
+      "mode": "production",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "webkit",
+      "mode": "development",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "webkit",
+      "mode": "development",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "webkit",
+      "mode": "production",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "webkit",
+      "mode": "production",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "firefox",
+      "mode": "development",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "firefox",
+      "mode": "development",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "firefox",
+      "mode": "production",
+      "origin": "localhost",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    },
+    {
+      "engine": "firefox",
+      "mode": "production",
+      "origin": "LAN",
+      "viewport": "1440x900",
+      "deviceScaleFactor": 1,
+      "screenshot": "none",
+      "choices": 20,
+      "defaultListLayout": "passed",
+      "backNavigation": "passed",
+      "focusTrap": "passed",
+      "backdropDismissal": "passed",
+      "serviceWorkers": 0,
+      "result": "passed"
+    }
+  ],
+  "imageResponsiveness": [
+    {
+      "measurement": "five-photo-heic",
+      "project": "desktop-baseline-chromium",
+      "clickMs": 262,
+      "done": true,
+      "longTasksSupported": true,
+      "longTasks": []
+    },
+    {
+      "measurement": "five-photo-heic",
+      "project": "desktop-baseline-webkit",
+      "clickMs": 268,
+      "done": true,
+      "longTasksSupported": false,
+      "longTasks": []
+    },
+    {
+      "measurement": "five-photo-heic",
+      "project": "desktop-baseline-firefox",
+      "clickMs": 157,
+      "done": true,
+      "longTasksSupported": false,
+      "longTasks": []
+    }
+  ],
+  "imageMeasurementLimits": "Button interaction under five fixture HEIC conversions; concurrent audit load. Long Tasks API is unsupported in WebKit/Firefox, so their empty longTasks arrays are not zero-task evidence. No before/after performance claim.",
+  "checks": {
+    "lint": "passed",
+    "typescript": "passed",
+    "productionBuild": "passed (normal and fixture configurations)"
+  },
+  "captures": [
+    {
+      "run": "cross-device-development",
+      "project": "development-localhost-chromium-desktop",
+      "name": "home",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-localhost-chromium-desktop",
+      "name": "add-wish",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-localhost-chromium-mobile",
+      "name": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-localhost-chromium-mobile",
+      "name": "add-wish",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-lan-chromium-desktop",
+      "name": "home",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-lan-chromium-desktop",
+      "name": "add-wish",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-lan-chromium-mobile",
+      "name": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development",
+      "project": "development-lan-chromium-mobile",
+      "name": "add-wish",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-localhost-chromium-desktop",
+      "name": "home",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-localhost-chromium-desktop",
+      "name": "add-wish",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-localhost-chromium-mobile",
+      "name": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-localhost-chromium-mobile",
+      "name": "add-wish",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-lan-chromium-desktop",
+      "name": "home",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-lan-chromium-desktop",
+      "name": "add-wish",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-lan-chromium-mobile",
+      "name": "home",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production",
+      "project": "production-lan-chromium-mobile",
+      "name": "add-wish",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": "1",
+          "transform": "none"
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-localhost-chromium-desktop",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-localhost-chromium-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-lan-chromium-desktop",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-lan-chromium-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-localhost-webkit-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-development-wheel",
+      "project": "development-lan-webkit-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-localhost-chromium-desktop",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-localhost-chromium-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-lan-chromium-desktop",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "deviceScaleFactor": 1,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-lan-chromium-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-localhost-webkit-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    },
+    {
+      "run": "cross-device-production-wheel",
+      "project": "production-lan-webkit-mobile",
+      "name": "wheel-idle",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "deviceScaleFactor": 3,
+      "visualViewportScale": 1,
+      "elements": [
+        {
+          "selector": "html",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": ".route-transition",
+          "zoom": "1",
+          "transform": "none"
+        },
+        {
+          "selector": "[role=dialog]",
+          "zoom": null,
+          "transform": null
+        }
+      ],
+      "mode": "viewport",
+      "screenshotScale": "css"
+    }
+  ],
+  "diagnosticCapture": {
+    "path": "performance-results/webkit-wheel-overflow-before.png",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "deviceScaleFactor": 3,
+    "mode": "viewport",
+    "screenshotScale": "css"
+  },
+  "limits": [
+    "No physical iPhone/Windows/Edge verification",
+    "No live wishlist CRUD, uploads, or RLS validation",
+    "Production authenticated LAN requires HTTPS; Secure cookies retained"
+  ]
+}

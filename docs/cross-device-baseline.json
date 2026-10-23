@@ -1,0 +1,173 @@
+[
+  {
+    "engine": "chromium",
+    "host": "localhost",
+    "mode": "development",
+    "signedIn": true,
+    "form": true,
+    "hover": true,
+    "api": {
+      "secure": true,
+      "uuid": "function",
+      "hover": true
+    },
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "host": "192.168.1.133",
+    "mode": "development",
+    "signedIn": true,
+    "form": false,
+    "hover": false,
+    "api": {
+      "secure": false,
+      "uuid": "undefined",
+      "hover": true
+    },
+    "errors": [
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: Error during WebSocket handshake: net::ERR_INVALID_HTTP_RESPONSE"
+    ]
+  },
+  {
+    "engine": "chromium",
+    "host": "localhost",
+    "mode": "production",
+    "signedIn": true,
+    "form": true,
+    "hover": true,
+    "api": {
+      "secure": true,
+      "uuid": "function",
+      "hover": true
+    },
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "host": "192.168.1.133",
+    "mode": "production",
+    "signedIn": false,
+    "form": false,
+    "hover": false,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "host": "localhost",
+    "mode": "development",
+    "signedIn": true,
+    "form": true,
+    "hover": true,
+    "api": {
+      "secure": true,
+      "uuid": "function",
+      "hover": true
+    },
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "host": "192.168.1.133",
+    "mode": "development",
+    "signedIn": true,
+    "form": false,
+    "hover": false,
+    "api": {
+      "secure": false,
+      "uuid": "undefined",
+      "hover": true
+    },
+    "errors": [
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: cannot parse response",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: cannot parse response",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: cannot parse response",
+      "WebSocket connection to 'ws://192.168.1.133:3101/_next/hmr?id=[omitted]' failed: cannot parse response"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "host": "localhost",
+    "mode": "production",
+    "signedIn": false,
+    "form": false,
+    "hover": false,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ]
+  },
+  {
+    "engine": "webkit",
+    "host": "192.168.1.133",
+    "mode": "production",
+    "signedIn": false,
+    "form": false,
+    "hover": false,
+    "errors": [
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ]
+  },
+  {
+    "engine": "firefox",
+    "host": "localhost",
+    "mode": "development",
+    "signedIn": true,
+    "form": true,
+    "hover": true,
+    "api": {
+      "secure": true,
+      "uuid": "function",
+      "hover": true
+    },
+    "errors": []
+  },
+  {
+    "engine": "firefox",
+    "host": "192.168.1.133",
+    "mode": "development",
+    "signedIn": true,
+    "form": false,
+    "hover": false,
+    "api": {
+      "secure": false,
+      "uuid": "undefined",
+      "hover": true
+    },
+    "errors": [
+      "[JavaScript Error: \"Firefox can’t establish a connection to the server at ws://192.168.1.133:3101/_next/hmr?id=[omitted].\" {file: \"http://192.168.1.133:3101/_next/static/chunks/node_modules_next_dist_client_14zvornz047l2._.js\" line: 16399}]",
+      "[JavaScript Error: \"Firefox can’t establish a connection to the server at ws://192.168.1.133:3101/_next/hmr?id=[omitted].\" {file: \"http://192.168.1.133:3101/_next/static/chunks/node_modules_next_dist_client_14zvornz047l2._.js\" line: 16399}]",
+      "[JavaScript Error: \"Firefox can’t establish a connection to the server at ws://192.168.1.133:3101/_next/hmr?id=[omitted].\" {file: \"http://192.168.1.133:3101/_next/static/chunks/node_modules_next_dist_client_14zvornz047l2._.js\" line: 16399}]",
+      "[JavaScript Error: \"Firefox can’t establish a connection to the server at ws://192.168.1.133:3101/_next/hmr?id=[omitted].\" {file: \"http://192.168.1.133:3101/_next/static/chunks/node_modules_next_dist_client_14zvornz047l2._.js\" line: 16399}]"
+    ]
+  },
+  {
+    "engine": "firefox",
+    "host": "localhost",
+    "mode": "production",
+    "signedIn": true,
+    "form": true,
+    "hover": true,
+    "api": {
+      "secure": true,
+      "uuid": "function",
+      "hover": true
+    },
+    "errors": []
+  },
+  {
+    "engine": "firefox",
+    "host": "192.168.1.133",
+    "mode": "production",
+    "signedIn": false,
+    "form": false,
+    "hover": false,
+    "errors": [
+      "[JavaScript Error: \"Cookie “sb-127-auth-token” has been rejected because a non-HTTPS cookie can’t be set as “secure”.\" {file: \"http://192.168.1.133:3102/sign-in\" line: 0}]"
+    ]
+  }
+]

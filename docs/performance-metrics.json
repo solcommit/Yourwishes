@@ -1,0 +1,3034 @@
+{
+  "recordedAt": "2026-10-23",
+  "scope": "Read-only localhost Next.js with live Supabase; no credentials, sessions, wish IDs or photo contents.",
+  "runs": {
+    "baseline-live-development": [
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "local",
+        "initialReadyMs": 5942,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56628
+          },
+          "wishlistMs": 2416.025
+        },
+        "detailOpenMs": 35,
+        "navigationMs": 801,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1515.584,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 21,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 190,
+        "layoutCount": 23,
+        "styleCount": 212,
+        "taskMs": 289.2039999999999,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2470,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56629
+          },
+          "wishlistMs": 1490.836
+        },
+        "detailOpenMs": 42,
+        "navigationMs": 1299,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1671.647,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 22,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 219,
+        "layoutCount": 25,
+        "styleCount": 240,
+        "taskMs": 285.921,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 6235,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56625
+          },
+          "wishlistMs": 2202.5620000000004
+        },
+        "detailOpenMs": 36,
+        "navigationMs": 1299,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1828.5819999999999,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 22,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 220,
+        "layoutCount": 23,
+        "styleCount": 242,
+        "taskMs": 319.04600000000005,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "offline",
+        "initialReadyMs": 2683,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56626
+          },
+          "wishlistMs": 1576.731
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999955,
+        "framesOver34ms": 0,
+        "frames": 258,
+        "layoutCount": -55,
+        "styleCount": -697,
+        "taskMs": -573.004,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 4281,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 61591
+          },
+          "wishlistMs": 1587.644
+        },
+        "detailOpenMs": 36,
+        "navigationMs": 799,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1380.0020000000002,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 23,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 190,
+        "layoutCount": 21,
+        "styleCount": 210,
+        "taskMs": 310.32800000000003,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2980,
+        "initial": {
+          "imageDimensions": [],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56626
+          },
+          "wishlistMs": 1765.2359999999999
+        },
+        "detailOpenMs": 29,
+        "navigationMs": 796,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1706.106,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 21,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 189,
+        "layoutCount": 23,
+        "styleCount": 211,
+        "taskMs": 274.783,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2699,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56625
+          },
+          "wishlistMs": 1530.21
+        },
+        "detailOpenMs": 24,
+        "navigationMs": 1302,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1878.605,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 23,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 222,
+        "layoutCount": 21,
+        "styleCount": 240,
+        "taskMs": 285.177,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 2932,
+        "initial": {
+          "imageDimensions": [],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56625
+          },
+          "wishlistMs": 1757.87
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 258,
+        "layoutCount": -59,
+        "styleCount": -655,
+        "taskMs": -598.3400000000001,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 5612,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 666,
+              "height": 666,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 1114,
+              "height": 834,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56627
+          },
+          "wishlistMs": 2490.25
+        },
+        "detailOpenMs": 27,
+        "navigationMs": 794,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 1562.758,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 23,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 190,
+        "layoutCount": 23,
+        "styleCount": 211,
+        "taskMs": 267.857,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2669,
+        "initial": {
+          "imageDimensions": [],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56626
+          },
+          "wishlistMs": 1527.714
+        },
+        "detailOpenMs": 34,
+        "navigationMs": 797,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 1
+        },
+        "refreshMs": 2119.125,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 20,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 206,
+        "layoutCount": 23,
+        "styleCount": 228,
+        "taskMs": 284.407,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2732,
+        "initial": {
+          "imageDimensions": [],
+          "requests": {
+            "other": 10,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 69138
+          },
+          "wishlistMs": 1500.56
+        },
+        "detailOpenMs": 40,
+        "navigationMs": 1298,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2
+        },
+        "refreshMs": 1642.1599999999999,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 4,
+          "ProfileControl": 4,
+          "WishlistPage": 5,
+          "WishTile": 10,
+          "AppDock": 4
+        },
+        "commits": 33,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 1,
+        "frames": 204,
+        "layoutCount": 57,
+        "styleCount": 227,
+        "taskMs": 275.029,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 4532,
+        "initial": {
+          "imageDimensions": [],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 2,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 1277073,
+            "other": 56811
+          },
+          "wishlistMs": 2931.136
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 257,
+        "layoutCount": -61,
+        "styleCount": -787,
+        "taskMs": -599.418,
+        "overflow": 0
+      }
+    ],
+    "baseline-live-production": [
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "local",
+        "initialReadyMs": 2754,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 85411
+          },
+          "wishlistMs": 1373.74
+        },
+        "detailOpenMs": 31,
+        "navigationMs": 20,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 2463.3990000000003,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 1,
+        "frames": 217,
+        "layoutCount": 19,
+        "styleCount": 233,
+        "taskMs": 216.20899999999997,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "hotspot",
+        "initialReadyMs": 4097,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 84209
+          },
+          "wishlistMs": 2720.991
+        },
+        "detailOpenMs": 21,
+        "navigationMs": 21,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1400.625,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 163,
+        "layoutCount": 21,
+        "styleCount": 179,
+        "taskMs": 218.02900000000002,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2758,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 512879,
+            "scripts": 302773,
+            "other": 86759
+          },
+          "wishlistMs": 1763.404
+        },
+        "detailOpenMs": 24,
+        "navigationMs": 21,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 9573.021999999999,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 654,
+        "layoutCount": 19,
+        "styleCount": 670,
+        "taskMs": 436.207,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "offline",
+        "initialReadyMs": 5413,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 85412
+          },
+          "wishlistMs": 2771.162
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": true,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 6,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 260,
+        "layoutCount": 4,
+        "styleCount": 263,
+        "taskMs": 154.03,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 3083,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 87363
+          },
+          "wishlistMs": 1770.746
+        },
+        "detailOpenMs": 25,
+        "navigationMs": 22,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1506.979,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 169,
+        "layoutCount": 20,
+        "styleCount": 185,
+        "taskMs": 216.088,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2880,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 84211
+          },
+          "wishlistMs": 1661.771
+        },
+        "detailOpenMs": 23,
+        "navigationMs": 22,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1730.085,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 183,
+        "layoutCount": 18,
+        "styleCount": 199,
+        "taskMs": 199.77200000000005,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2263,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 84801
+          },
+          "wishlistMs": 1311.279
+        },
+        "detailOpenMs": 32,
+        "navigationMs": 12,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 2015.83,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 200,
+        "layoutCount": 17,
+        "styleCount": 216,
+        "taskMs": 175.90200000000002,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 3929,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 83599
+          },
+          "wishlistMs": 2373.297
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": true,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 6,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 260,
+        "layoutCount": 4,
+        "styleCount": 263,
+        "taskMs": 137.96599999999998,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 2743,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 86188
+          },
+          "wishlistMs": 1557.019
+        },
+        "detailOpenMs": 13,
+        "navigationMs": 10,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1627.595,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 176,
+        "layoutCount": 20,
+        "styleCount": 192,
+        "taskMs": 135.28600000000003,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2581,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 83601
+          },
+          "wishlistMs": 1439.962
+        },
+        "detailOpenMs": 27,
+        "navigationMs": 22,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1594.824,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 175,
+        "layoutCount": 18,
+        "styleCount": 190,
+        "taskMs": 233.91899999999998,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2772,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 1551073,
+            "scripts": 302773,
+            "other": 84210
+          },
+          "wishlistMs": 1710.349
+        },
+        "detailOpenMs": 30,
+        "navigationMs": 20,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": 1719.1519999999998,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 11,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 182,
+        "layoutCount": 17,
+        "styleCount": 196,
+        "taskMs": 180.68900000000005,
+        "overflow": 0
+      },
+      {
+        "label": "baseline-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 2510,
+        "initial": {
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 0,
+            "scripts": 302773,
+            "other": 83601
+          },
+          "wishlistMs": 1471.0010000000002
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": true,
+        "requests": {
+          "wishlist": 1,
+          "other": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 6,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 263,
+        "layoutCount": 4,
+        "styleCount": 266,
+        "taskMs": 171.55500000000006,
+        "overflow": 0
+      }
+    ],
+    "after-live-development": [
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "local",
+        "initialReadyMs": 1677,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 10,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56831
+          },
+          "wishlistMs": 751.235
+        },
+        "detailOpenMs": 19,
+        "navigationMs": 85,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 749.152,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 28,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 146,
+        "layoutCount": 52,
+        "styleCount": 165,
+        "taskMs": 222.27999999999992,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "hotspot",
+        "initialReadyMs": 1189,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 10,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 61786
+          },
+          "wishlistMs": 651.223
+        },
+        "detailOpenMs": 28,
+        "navigationMs": 794,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 985.286,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 31,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 189,
+        "layoutCount": 64,
+        "styleCount": 207,
+        "taskMs": 285.00800000000004,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2495,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56188
+          },
+          "wishlistMs": 1504.058
+        },
+        "detailOpenMs": 34,
+        "navigationMs": 289,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 1133.741,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 29,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 159,
+        "layoutCount": 52,
+        "styleCount": 177,
+        "taskMs": 211.6800000000001,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "offline",
+        "initialReadyMs": 1669,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 61137
+          },
+          "wishlistMs": 665.006
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999727,
+        "framesOver34ms": 0,
+        "frames": 258,
+        "layoutCount": -71,
+        "styleCount": -476,
+        "taskMs": -449.698,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 1730,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56184
+          },
+          "wishlistMs": 971.1840000000001
+        },
+        "detailOpenMs": 28,
+        "navigationMs": 86,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 3453.605,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 26,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 287,
+        "layoutCount": 55,
+        "styleCount": 305,
+        "taskMs": 260.07800000000003,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 2075,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56184
+          },
+          "wishlistMs": 670.21
+        },
+        "detailOpenMs": 34,
+        "navigationMs": 798,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 697.4440000000001,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 31,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 190,
+        "layoutCount": 51,
+        "styleCount": 208,
+        "taskMs": 252.579,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 1935,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 10,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56827
+          },
+          "wishlistMs": 848.404
+        },
+        "detailOpenMs": 18,
+        "navigationMs": 296,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 844.287,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 29,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 159,
+        "layoutCount": 52,
+        "styleCount": 176,
+        "taskMs": 254.699,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 1695,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56187
+          },
+          "wishlistMs": 612.7959999999999
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000273,
+        "framesOver34ms": 0,
+        "frames": 258,
+        "layoutCount": -75,
+        "styleCount": -465,
+        "taskMs": -433.76599999999996,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 1289,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56186
+          },
+          "wishlistMs": 700.2139999999999
+        },
+        "detailOpenMs": 17,
+        "navigationMs": 799,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 1123.892,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 32,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 189,
+        "layoutCount": 65,
+        "styleCount": 209,
+        "taskMs": 222.43999999999997,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 1943,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56186
+          },
+          "wishlistMs": 726.356
+        },
+        "detailOpenMs": 21,
+        "navigationMs": 794,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 1131.0030000000002,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 31,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 189,
+        "layoutCount": 65,
+        "styleCount": 208,
+        "taskMs": 273.072,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2231,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 10,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56828
+          },
+          "wishlistMs": 961.165
+        },
+        "detailOpenMs": 20,
+        "navigationMs": 294,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "navigation": 1,
+          "other": 2,
+          "images": 1
+        },
+        "refreshMs": 857.873,
+        "refreshStatus": 200,
+        "renders": {
+          "AppShell": 3,
+          "ProfileControl": 1,
+          "WishlistPage": 2,
+          "AppDock": 1,
+          "WishTile": 2
+        },
+        "commits": 29,
+        "longTasks": [],
+        "frameP95Ms": 16.80000000000109,
+        "framesOver34ms": 0,
+        "frames": 158,
+        "layoutCount": 53,
+        "styleCount": 177,
+        "taskMs": 221.611,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-development",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 1375,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 9,
+            "scripts": 24,
+            "wishlist": 1,
+            "images": 2,
+            "navigation": 3
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 1278798,
+            "other": 56183
+          },
+          "wishlistMs": 714.028
+        },
+        "detailOpenMs": null,
+        "navigationMs": null,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 0,
+        "errorShown": false,
+        "requests": {
+          "navigation": 1,
+          "other": 3
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 0,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000273,
+        "framesOver34ms": 1,
+        "frames": 256,
+        "layoutCount": -74,
+        "styleCount": -489,
+        "taskMs": -496.092,
+        "overflow": 0
+      }
+    ],
+    "after-live-production": [
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "local",
+        "initialReadyMs": 1493,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 0,
+              "height": 0,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 42055,
+            "scripts": 303968,
+            "other": 83843
+          },
+          "wishlistMs": 783.434
+        },
+        "detailOpenMs": 12,
+        "navigationMs": 9,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 675.391,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 140,
+        "layoutCount": 21,
+        "styleCount": 156,
+        "taskMs": 108.74299999999998,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "hotspot",
+        "initialReadyMs": 1717,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83845
+          },
+          "wishlistMs": 728.322
+        },
+        "detailOpenMs": 13,
+        "navigationMs": 13,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 827.5169999999999,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 141,
+        "layoutCount": 20,
+        "styleCount": 156,
+        "taskMs": 100.07300000000002,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 2432,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83844
+          },
+          "wishlistMs": 997.197
+        },
+        "detailOpenMs": 13,
+        "navigationMs": 16,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 955.389,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 142,
+        "layoutCount": 17,
+        "styleCount": 156,
+        "taskMs": 147.78400000000002,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "deviceScaleFactor": 3
+        },
+        "network": "offline",
+        "initialReadyMs": 3239,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 171,
+              "height": 171,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 171,
+              "height": 127,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83843
+          },
+          "wishlistMs": 1667.019
+        },
+        "detailOpenMs": 29,
+        "navigationMs": 16,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": true,
+        "requests": {
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 13,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 143,
+        "layoutCount": 22,
+        "styleCount": 159,
+        "taskMs": 216.29800000000006,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 1248,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83842
+          },
+          "wishlistMs": 637.056
+        },
+        "detailOpenMs": 29,
+        "navigationMs": 19,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 907.589,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 1,
+        "frames": 133,
+        "layoutCount": 18,
+        "styleCount": 148,
+        "taskMs": 207.422,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 1268,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83843
+          },
+          "wishlistMs": 711.961
+        },
+        "detailOpenMs": 30,
+        "navigationMs": 13,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 753.932,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 142,
+        "layoutCount": 18,
+        "styleCount": 157,
+        "taskMs": 212.33799999999997,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 1354,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83845
+          },
+          "wishlistMs": 698.6709999999999
+        },
+        "detailOpenMs": 32,
+        "navigationMs": 14,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 1643.0659999999998,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 178,
+        "layoutCount": 17,
+        "styleCount": 192,
+        "taskMs": 234.62799999999996,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1440,
+          "height": 900,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 1839,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 448,
+              "height": 448,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 448,
+              "height": 335,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83844
+          },
+          "wishlistMs": 857.603
+        },
+        "detailOpenMs": 28,
+        "navigationMs": 18,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": true,
+        "requests": {
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 13,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 143,
+        "layoutCount": 21,
+        "styleCount": 157,
+        "taskMs": 186.31199999999998,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "local",
+        "initialReadyMs": 2401,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 93794
+          },
+          "wishlistMs": 1356.299
+        },
+        "detailOpenMs": 31,
+        "navigationMs": 18,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 834.235,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 141,
+        "layoutCount": 17,
+        "styleCount": 157,
+        "taskMs": 228.86700000000005,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "hotspot",
+        "initialReadyMs": 1080,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 83844
+          },
+          "wishlistMs": 567.6379999999999
+        },
+        "detailOpenMs": 11,
+        "navigationMs": 16,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 896.062,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 143,
+        "layoutCount": 18,
+        "styleCount": 157,
+        "taskMs": 201.99000000000007,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "slow-4g",
+        "initialReadyMs": 1318,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 84457
+          },
+          "wishlistMs": 626.985
+        },
+        "detailOpenMs": 32,
+        "navigationMs": 19,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": false,
+        "requests": {
+          "wishlist": 1,
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": 876.332,
+        "refreshStatus": 200,
+        "renders": null,
+        "commits": 12,
+        "longTasks": [],
+        "frameP95Ms": 16.700000000000728,
+        "framesOver34ms": 0,
+        "frames": 143,
+        "layoutCount": 17,
+        "styleCount": 156,
+        "taskMs": 206.95600000000002,
+        "overflow": 0
+      },
+      {
+        "label": "after-live-production",
+        "viewport": {
+          "width": 1920,
+          "height": 1080,
+          "deviceScaleFactor": 1
+        },
+        "network": "offline",
+        "initialReadyMs": 4142,
+        "initial": {
+          "imageDimensions": [
+            {
+              "width": 608,
+              "height": 608,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            },
+            {
+              "width": 608,
+              "height": 455,
+              "displayedWidth": 0,
+              "displayedHeight": 0
+            }
+          ],
+          "requests": {
+            "other": 6,
+            "scripts": 11,
+            "wishlist": 1,
+            "navigation": 7,
+            "images": 2
+          },
+          "transfers": {
+            "images": 89420,
+            "scripts": 303968,
+            "other": 86736
+          },
+          "wishlistMs": 1659.8010000000002
+        },
+        "detailOpenMs": 11,
+        "navigationMs": 18,
+        "expectedTiles": 2,
+        "visibleTilesAfterRefresh": 2,
+        "errorShown": true,
+        "requests": {
+          "other": 1,
+          "images": 1
+        },
+        "refreshMs": null,
+        "refreshStatus": null,
+        "renders": null,
+        "commits": 13,
+        "longTasks": [],
+        "frameP95Ms": 16.799999999999272,
+        "framesOver34ms": 0,
+        "frames": 142,
+        "layoutCount": 22,
+        "styleCount": 158,
+        "taskMs": 146.42500000000004,
+        "overflow": 0
+      }
+    ]
+  },
+  "controlledBackend": {
+    "baseline": [
+      {
+        "kind": "wishlist",
+        "elapsedMs": 962.958666,
+        "bytes": 16095,
+        "backendRequests": 6
+      },
+      {
+        "kind": "wishlist",
+        "elapsedMs": 934.8157919999999,
+        "bytes": 16095,
+        "backendRequests": 6
+      },
+      {
+        "kind": "wishlist",
+        "elapsedMs": 928.3959169999998,
+        "bytes": 16095,
+        "backendRequests": 6
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 940.3559159999995,
+        "bytes": 3468413,
+        "backendRequests": 6
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 954.9867080000004,
+        "bytes": 3468413,
+        "backendRequests": 6
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 949.4229169999999,
+        "bytes": 3468413,
+        "backendRequests": 6
+      }
+    ],
+    "after": [
+      {
+        "kind": "wishlist",
+        "elapsedMs": 705.861834,
+        "bytes": 16095,
+        "backendRequests": 5
+      },
+      {
+        "kind": "wishlist",
+        "elapsedMs": 636.2315000000001,
+        "bytes": 16095,
+        "backendRequests": 4
+      },
+      {
+        "kind": "wishlist",
+        "elapsedMs": 630.7931249999997,
+        "bytes": 16095,
+        "backendRequests": 4
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 812.620167,
+        "bytes": 3468413,
+        "backendRequests": 5
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 769.5805419999997,
+        "bytes": 3468413,
+        "backendRequests": 5
+      },
+      {
+        "kind": "original",
+        "elapsedMs": 777.8954160000003,
+        "bytes": 3468413,
+        "backendRequests": 5
+      }
+    ]
+  },
+  "images": [
+    {
+      "sample": 1,
+      "requestedWidth": null,
+      "bytes": 1037827,
+      "width": 666,
+      "height": 666,
+      "format": "png",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 3404.3208750000003
+    },
+    {
+      "sample": 1,
+      "requestedWidth": 320,
+      "bytes": 15128,
+      "width": 320,
+      "height": 320,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 5014.93625
+    },
+    {
+      "sample": 1,
+      "requestedWidth": 640,
+      "bytes": 46998,
+      "width": 640,
+      "height": 640,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 2924.670082999999
+    },
+    {
+      "sample": 1,
+      "requestedWidth": 960,
+      "bytes": 51690,
+      "width": 666,
+      "height": 666,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 2162.2817919999998
+    },
+    {
+      "sample": 2,
+      "requestedWidth": null,
+      "bytes": 512512,
+      "width": 1114,
+      "height": 834,
+      "format": "png",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 2628.4519580000015
+    },
+    {
+      "sample": 2,
+      "requestedWidth": 320,
+      "bytes": 10268,
+      "width": 320,
+      "height": 240,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 2344.6084169999995
+    },
+    {
+      "sample": 2,
+      "requestedWidth": 640,
+      "bytes": 41688,
+      "width": 640,
+      "height": 479,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 693.1134999999995
+    },
+    {
+      "sample": 2,
+      "requestedWidth": 960,
+      "bytes": 80830,
+      "width": 960,
+      "height": 719,
+      "format": "webp",
+      "status": 200,
+      "anonymousStatus": 401,
+      "cacheControl": "private, no-store",
+      "elapsedMs": 2098.8170830000017
+    }
+  ],
+  "coldNetwork": [
+    {
+      "measurement": "cold-network",
+      "network": "hotspot",
+      "project": "desktop-baseline-chromium",
+      "dockReadyMs": 1115,
+      "homeMs": 834,
+      "addOpenMs": 51
+    },
+    {
+      "measurement": "cold-network",
+      "network": "slow-4g",
+      "project": "desktop-baseline-chromium",
+      "dockReadyMs": 641,
+      "homeMs": 367,
+      "addOpenMs": 273
+    },
+    {
+      "measurement": "cold-network",
+      "network": "hotspot",
+      "project": "laptop-chromium",
+      "dockReadyMs": 748,
+      "homeMs": 857,
+      "addOpenMs": 69
+    },
+    {
+      "measurement": "cold-network",
+      "network": "slow-4g",
+      "project": "laptop-chromium",
+      "dockReadyMs": 1138,
+      "homeMs": 828,
+      "addOpenMs": 64
+    },
+    {
+      "measurement": "cold-network",
+      "network": "hotspot",
+      "project": "mobile-390-chromium",
+      "dockReadyMs": 753,
+      "homeMs": 829,
+      "addOpenMs": 63
+    },
+    {
+      "measurement": "cold-network",
+      "network": "slow-4g",
+      "project": "mobile-390-chromium",
+      "dockReadyMs": 652,
+      "homeMs": 353,
+      "addOpenMs": 284
+    }
+  ]
+}
