@@ -321,29 +321,6 @@ button { color: inherit; }
 .layout-picker .icon-button.selected { background: var(--surface); color: var(--interactive); box-shadow: inset 0 1px 0 rgb(255 255 255 / 13%), 0 1px 3px rgb(0 0 0 / 10%); }
 .layout-picker .icon-button:hover:not(.selected) { background: color-mix(in srgb, var(--surface) 55%, transparent); color: var(--foreground); }
 
-.app-dock {
-  position: fixed;
-  z-index: 35;
-  bottom: max(var(--desktop-space), env(safe-area-inset-bottom));
-  left: 50%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid color-mix(in srgb, var(--border) 48%, transparent);
-  border-radius: 23px;
-  background: color-mix(in srgb, var(--surface) 70%, transparent);
-  padding: 9px;
-  box-shadow: 0 8px 28px rgb(0 0 0 / 10%), inset 0 1px 0 rgb(255 255 255 / 13%);
-  -webkit-backdrop-filter: saturate(165%) blur(14px);
-  backdrop-filter: saturate(165%) blur(14px);
-  transform: translateX(-50%);
-}
-.dock-link { position: relative; display: block; border-radius: 14px; color: var(--muted); text-decoration: none; }
-.dock-link.is-active { color: var(--interactive); }
-.dock-icon { display: grid; width: 52px; height: 52px; place-items: center; border: 1px solid color-mix(in srgb, var(--border) 32%, transparent); border-radius: 16px; background: linear-gradient(155deg, color-mix(in srgb, var(--surface) 96%, white), color-mix(in srgb, var(--surface) 86%, var(--surface-subtle))); box-shadow: inset 0 1px 0 rgb(255 255 255 / 14%), 0 2px 5px rgb(0 0 0 / 5%); transition: background-color 180ms ease, color 180ms ease, box-shadow 180ms ease; }
-.dock-link.is-active .dock-icon { background: color-mix(in srgb, var(--interactive) 8%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--interactive) 7%, transparent), 0 2px 7px rgb(0 0 0 / 5%); }
-.dock-link:hover .dock-icon { color: var(--interactive); background: var(--surface-subtle); }
-:root[data-reduce-transparency="true"] .app-dock { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
 .scroll-bezel { position: fixed; z-index: 40; top: 18%; bottom: 18%; width: 9px; border-radius: 50%; background: var(--interactive); pointer-events: none; transform-origin: center; }
 .scroll-bezel-left { left: -6px; }
 .scroll-bezel-right { right: -6px; }
@@ -582,14 +559,6 @@ button { color: inherit; }
   .wishlist-list { gap: 12px; }
   .wish-tile-list .wish-shared-image { width: 74px; flex-basis: 74px; }
   .wish-tile-list .wish-name { font-size: 20px; }
-  .app-dock {
-    position: fixed;
-    bottom: calc(env(safe-area-inset-bottom) + 10px);
-    gap: 7px;
-    border-radius: 22px;
-    padding: 8px;
-  }
-  .dock-icon { width: 50px; height: 50px; border-radius: 15px; }
   .discover-landing { padding-block: clamp(76px, 18dvh, 154px); }
   .discover-stage { min-height: 0; padding-top: 4px; }
   .discovery-method-list { width: 100%; gap: 9px; }
@@ -629,11 +598,7 @@ button { color: inherit; }
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 35%, transparent);
 }
 .sheet-header-titleless { justify-content: flex-end; }
-.dock-magnifier { display: block; }
-.dock-slot { flex: none; }
-@media (hover: hover) and (pointer: fine) {
-  .app-dock { padding-inline: 24px; }
-}
+
 
 /* Private photos preserve tile geometry while loading and provide a real retry. */
 .wish-tile-wrapper, .wish-tile { position: relative; min-width: 0; }
@@ -727,3 +692,7 @@ button { color: inherit; }
 
 /* Reserve scrollbar space so modal scroll locking does not move the source grid. */
 html { scrollbar-gutter: stable; }
+
+.partner-avatar { pointer-events:auto; transform-origin:top left; }
+
+.desktop-page-heading > .page-title { min-width:0; overflow-wrap:anywhere; }

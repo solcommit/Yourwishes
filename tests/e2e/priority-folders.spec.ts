@@ -11,10 +11,11 @@ test.beforeAll(async()=>{
     createRoot(document.getElementById('root')).render(<WishlistPage owner={location.search.includes('mine')?'you':'partner'}/>);
   `,loader:'tsx',resolveDir:process.cwd()},bundle:true,write:false,platform:'browser',format:'esm',loader:{'.css':'empty'},define:{'process.env.NODE_ENV':'"production"'},plugins:[{name:'isolated-workspace',setup(builder){
     builder.onResolve({filter:/settings-provider$/},()=>({path:'settings',namespace:'fixture'}));
+    builder.onResolve({filter:/profile-photo-provider$/},()=>({path:'profile',namespace:'fixture'}));
     builder.onResolve({filter:/app-shell$/},()=>({path:'workspace',namespace:'fixture'}));
     builder.onResolve({filter:/^next\/(image|link)$/},args=>({path:args.path,namespace:'fixture'}));
-    builder.onLoad({filter:/.*/,namespace:'fixture'},args=>({loader:'jsx',resolveDir:process.cwd(),contents:args.path==='settings'?`export const BACKGROUND_PRESETS=[];export const useAppSettings=()=>({settings:{defaultLayout:'grid',fluidAnimations:true},updateSettings:()=>{}});`:args.path==='workspace'?`
-      const items=[{id:'one',name:'Partner common',priority:'Common',owner:'partner'},{id:'two',name:'Partner essential',priority:'Legendary',owner:'partner'},{id:'three',name:'Another common',priority:'Common',owner:'partner'},{id:'four',name:'Own private wish',priority:'Rare',owner:'you'}].map(item=>({...item,images:[],image:'',price:null}));
+    builder.onLoad({filter:/.*/,namespace:'fixture'},args=>({loader:'jsx',resolveDir:process.cwd(),contents:args.path==='profile'?`export const useProfilePhoto=()=>({partner:{nickname:'Partner',photo:null}});`:args.path==='settings'?`export const BACKGROUND_PRESETS=[];export const useAppSettings=()=>({settings:{defaultLayout:'grid',fluidAnimations:true},updateSettings:()=>{}});`:args.path==='workspace'?`
+      const items=[{id:'one',name:'Partner common',priority:'Common',owner:'partner'},{id:'two',name:'Partner essential',priority:'Legendary',owner:'partner'},{id:'three',name:'Another common',priority:'Common',owner:'partner'},{id:'four',name:'Own private wish',priority:'Rare',owner:'you'}].map(item=>({...item,images:location.search.includes('photos')&&item.id==='one'?['/api/wishlist/images/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa']:[],image:'',price:null}));
       export const useWorkspace=()=>({items}); export const useWorkspaceActions=()=>({openItem:item=>{window.opened=item.name;}});
     `:args.path==='next/image'?`import React from 'react';export default function Image({unoptimized,...props}){return <img {...props}/>}`:`import React from 'react';export default function Link({href,children,...props}){return <a href={href} {...props}>{children}</a>}` }));
   }}]});
@@ -28,11 +29,12 @@ test('Sort is separate and Partner-only; actual current Folder source isolates a
   await page.goto(url);const sort=page.getByRole('button',{name:'Sort',exact:true});await expect(sort).toBeVisible();
   expect(await sort.evaluate(element=>!!element.closest('.layout-picker'))).toBe(false);
   await sort.click();await expect(page.locator('.folder-root')).toHaveCount(5);
+  await expect(page.locator('.priority-folders')).toHaveCSS('animation-name','wish-batch-reveal');
   expect(await page.locator('.folder-root').evaluateAll(elements=>new Set(elements.map(element=>(element as HTMLElement).style.getPropertyValue('--folder-rgb'))).size)).toBe(5);
   await page.locator('.folder-stage').first().focus();await page.keyboard.press('Enter');
   await expect(page.locator('.folder-root')).toHaveCount(1);
-  await expect(page.locator('.wish-batch')).toHaveAttribute('data-ready','true');
-  await expect(page.locator('.wish-batch .wish-tile')).toHaveCount(2);
+  await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-ready','true');
+  await expect(page.locator('.priority-folder-content .wish-batch .wish-tile')).toHaveCount(2);
   await expect(page.locator('.folder-root')).toHaveAttribute('data-draggable','');
   await page.getByRole('button',{name:'← Бүх ангилал'}).click();await expect(page.locator('.folder-root')).toHaveCount(5);
   await page.locator('.folder-stage').nth(1).click();await expect(page.getByRole('status')).toContainText('Энэ ангилалд хүсэл алга.');
@@ -46,14 +48,14 @@ test('Sort is separate and Partner-only; actual current Folder source isolates a
 test('native folder pages drag without changing wish data and expanded cards still open',async({page})=>{
   await page.setViewportSize({width:1024,height:850});await page.goto(url);await page.getByRole('button',{name:'Sort',exact:true}).click();
   await page.locator('.folder-stage').first().click();await expect(page.locator('.folder-root')).toHaveCount(1);
-  await expect(page.locator('.wish-batch')).toHaveAttribute('data-arriving','false');
+  await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-arriving','false');
   const card=page.locator('.folder-item').first();await page.waitForTimeout(500);
   const box=await card.boundingBox();if(!box)throw Error('Missing page');
   await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width/2+100,box.y+box.height/2+70,{steps:10});
   await expect(page.locator('.folder-root')).toHaveAttribute('data-dragging','');await page.mouse.up();
-  await expect(page.locator('.wish-batch .wish-tile')).toHaveCount(2);
+  await expect(page.locator('.priority-folder-content .wish-batch .wish-tile')).toHaveCount(2);
   expect(await page.evaluate(()=>(window as unknown as {opened?:string}).opened)).toBeUndefined();
-  await page.locator('.wish-batch .wish-open-target').first().click();
+  await page.locator('.priority-folder-content .wish-batch .wish-open-target').first().click();
   expect(await page.evaluate(()=>(window as unknown as {opened:string}).opened)).toBe('Partner common');
 });
 test('responsive folder navigation and reduced motion',async({page})=>{
@@ -62,12 +64,12 @@ test('responsive folder navigation and reduced motion',async({page})=>{
     await page.setViewportSize({width,height:900});await page.goto(url);await page.getByRole('button',{name:'Sort',exact:true}).click();
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
     await page.locator('.folder-stage').last().click();await expect(page.locator('.folder-root')).toHaveCount(1);
-    await expect(page.locator('.wish-batch')).toHaveAttribute('data-arriving','false');
+    await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-arriving','false');
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   }
   await page.screenshot({path:'performance-results/current-folder-view.png',fullPage:true});
   await page.emulateMedia({reducedMotion:'reduce'});await page.goto(url);await page.getByRole('button',{name:'Sort',exact:true}).click();await page.locator('.folder-stage').first().click();
-  await expect(page.locator('.wish-batch')).toHaveAttribute('data-ready','true');await expect(page.locator('.wish-batch')).toHaveAttribute('data-arriving','false');
+  await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-ready','true');await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-arriving','false');
   await expect(page.locator('.folder-root')).not.toHaveAttribute('data-draggable','');expect(errors).toEqual([]);
 });
 
@@ -90,4 +92,20 @@ test('upper and lower folder slots and scroll stay fixed throughout opening',asy
       await expect(page.locator('.folder-root')).toHaveCount(1);
     }
   }
+});
+
+test('desktop mouse drags actual image previews without native image dragging or accidental detail opening',async({page})=>{
+  await page.setViewportSize({width:1440,height:900});
+  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aD1sAAAAASUVORK5CYII=','base64');
+  await page.route('**/api/wishlist/images/**',route=>route.fulfill({contentType:'image/png',body:png}));
+  await page.goto(url+'?photos');await page.getByRole('button',{name:'Sort',exact:true}).click();await page.locator('.folder-stage').first().click();
+  await expect(page.locator('.folder-root')).toHaveCount(1);await expect(page.locator('.priority-folder-content .wish-batch')).toHaveAttribute('data-arriving','false');
+  const image=page.locator('.folder-item img').first();await expect(image).toHaveAttribute('src',/^blob:/);await expect(image).toHaveAttribute('draggable','false');
+  const bounds=await image.boundingBox();if(!bounds)throw Error('No preview image');
+  const card=page.locator('.folder-item').first();const before=await card.getAttribute('style');
+  await page.mouse.move(bounds.x+bounds.width/2,bounds.y+bounds.height/2);await page.mouse.down();await page.mouse.move(bounds.x+bounds.width/2+120,bounds.y+bounds.height/2+70,{steps:15});
+  await expect(page.locator('.folder-root')).toHaveAttribute('data-dragging','');await page.waitForTimeout(80);expect(await card.getAttribute('style')).not.toBe(before);await page.mouse.up();
+  expect(await page.evaluate(()=>(window as unknown as {opened?:string}).opened)).toBeUndefined();
+  await expect(page.locator('.folder-root')).not.toHaveAttribute('data-dragging','');
+  await image.click();expect(await page.evaluate(()=>(window as unknown as {opened?:string}).opened)).toBe('Partner common');
 });

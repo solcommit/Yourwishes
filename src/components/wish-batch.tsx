@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode, type ComponentPropsWithoutRef } from "react";
 import "./wish-batch.css";
 
 export const WishFlightOrigin = createContext<(() => DOMRect | undefined) | null>(null);
@@ -7,7 +7,7 @@ const BatchPhotos = createContext(false);
 export const useBatchPhotos = () => useContext(BatchPhotos);
 
 /** Mount every thumbnail eagerly, then reveal the entire list after decode or failure. */
-export function WishBatch({ children, className }: { children: ReactNode; className: string }) {
+export function WishBatch({ children, className, ...props }: { children: ReactNode; className: string } & Omit<ComponentPropsWithoutRef<"div">,"children"|"className">) {
   const getOrigin = useContext(WishFlightOrigin);
   const [arriving, setArriving] = useState(false);
   const host = useRef<HTMLDivElement>(null);
@@ -50,5 +50,5 @@ export function WishBatch({ children, className }: { children: ReactNode; classN
     check();
     return () => { alive = false; observer.disconnect(); cancelAnimationFrame(frame); flights.forEach(flight => flight.cancel()); };
   }, [getOrigin]);
-  return <BatchPhotos.Provider value={true}><div ref={host} className={`wish-batch ${className}`} data-ready={ready} data-flight={!!getOrigin} data-arriving={arriving} aria-busy={!ready} inert={!ready || arriving}>{children}</div></BatchPhotos.Provider>;
+  return <BatchPhotos.Provider value={true}><div {...props} ref={host} className={`wish-batch ${className}`} data-ready={ready} data-flight={!!getOrigin} data-arriving={arriving} aria-busy={!ready} inert={!ready || arriving}>{children}</div></BatchPhotos.Provider>;
 }

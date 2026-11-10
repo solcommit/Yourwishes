@@ -48,7 +48,7 @@ export function PrivateWishPhoto({ src, name, list, imageRef }: {
     return () => { alive = false; observer.disconnect(); if (objectUrl) URL.revokeObjectURL(objectUrl); window.removeEventListener("yourwishes-private-data-cleared", clear); window.removeEventListener("yourwishes-session-ending", clear); };
   }, [src, list, attempt, batch]);
   return <span ref={host} className="private-wish-photo" data-photo-pending={!state.error && (!state.url || !!state.loading)}>
-    {state.url ? <Image ref={imageRef} className="wish-image" src={state.url} alt="" width={720} height={560} unoptimized loading={batch ? "eager" : "lazy"}
+    {state.url ? <Image ref={imageRef} className="wish-image" src={state.url} alt="" draggable={false} width={720} height={560} unoptimized loading={batch ? "eager" : "lazy"}
       onLoad={() => setState((current) => ({ ...current, loading: false }))}
       onError={() => { invalidatePrivatePhoto(requestedUrl.current); setState({ error: true }); toast.error("Photo could not load", { id: "wish-photo-error" }); }} /> : <span className="wish-image wish-image-empty" />}
     {state.error && <span className="photo-load-error"><Alert><AlertDescription>Photo unavailable</AlertDescription></Alert>

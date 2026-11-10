@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, LayoutGroup, animate, motion, useIsPresent, useMotionValueEvent, useScroll, useSpring, useReducedMotion } from "motion/react";
-import { Camera, ChevronLeft, Home, Pencil, Settings2, X } from "lucide-react";
+import { Camera, ChevronLeft, Pencil, Settings2, X } from "lucide-react";
 import {
   createContext,
   memo,
@@ -21,9 +21,11 @@ import {
   type ReactNode,
 } from "react";
 import { type WishlistItem, type WishInput, validateWish } from "@/lib/wishlist/types";
-import { prepareWishImages } from "@/lib/prepare-wish-image";
+import { prepareWishImage, prepareWishImages } from "@/lib/prepare-wish-image";
 import { createClientUuid } from "@/lib/client-uuid";
-import { AppDock } from "@/components/app-dock";
+import { AppNavigation } from "./navigation/app-navigation";
+import { PartnerAvatar } from "./partner-avatar";
+import { readLegacyProfilePhoto } from "@/lib/legacy-profile-photo";
 import { WishGallery } from "@/components/wish-gallery";
 import { wishLayoutTransition } from "@/lib/wish-transition";
 import { priorityLabel, wishPhotoProgress, wishUiError } from "@/lib/wish-copy";
@@ -37,6 +39,7 @@ import {
   revokeTemporaryWishImage,
 } from "@/lib/wish-media";
 import { useAppSettings } from "@/components/settings-provider";
+import { ProfilePhotoProvider, useProfilePhoto } from "./profile-photo-provider";
 import { Button, IconButton } from "@/components/ui/button";
 import { WorkspaceBackground } from "./backgrounds/workspace-background";
 import { FormSelect } from "@/components/ui/select";
@@ -60,7 +63,6 @@ type WorkspaceContextValue = {
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
 const WorkspaceActionsContext = createContext<Pick<WorkspaceContextValue, "openItem" | "openAddItem"> | null>(null);
-const MotionLink = motion.create(Link);
 
 export function useWorkspace() {
   const workspace = useContext(WorkspaceContext);
@@ -125,7 +127,8 @@ const ProfileControl = memo(function ProfileControl({
   changePhoto: () => void;
 }) {
   const pathname = usePathname();
-  const { settings, profilePhoto } = useAppSettings();
+  const { settings } = useAppSettings();
+  const { profilePhoto, nickname } = useProfilePhoto();
   const [open, setOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [hoverEnabled, setHoverEnabled] = useState(false);
@@ -204,7 +207,7 @@ const ProfileControl = memo(function ProfileControl({
         {profilePhoto ? (
           <Image alt="" className="profile-photo" fill sizes="56px" src={profilePhoto} unoptimized />
         ) : (
-          settings.nickname.trim().charAt(0).toLocaleUpperCase() || "Y"
+          (nickname ?? settings.nickname).trim().charAt(0).toLocaleUpperCase() || "Y"
         )}
       </motion.button>
       <AnimatePresence initial={false}>
@@ -614,47 +617,24 @@ function ItemForm({
 }
 
 function NicknameForm({ close }: { close: () => void }) {
-  const { settings, updateSettings } = useAppSettings();
-  const [error, setError] = useState("");
-
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const nickname = String(formData.get("nickname") ?? "").trim();
-    if (!nickname || nickname.length > 32) {
-      setError("Enter a nickname between 1 and 32 characters.");
-      return;
-    }
-    updateSettings({ nickname });
-    close();
-  }
-
-  return (
-    <SheetFrame close={close} title="Edit Nickname">
-      <form className="sheet-form" onSubmit={handleSubmit}>
-        <label className="field-label">
-          Nickname
-          <input
-            autoComplete="nickname"
-            className="field-input"
-            defaultValue={settings.nickname}
-            maxLength={32}
-            name="nickname"
-            required
-          />
-        </label>
-        {error && <p className="form-error" role="alert">{error}</p>}
-        <div className="sheet-actions">
-          <Button onClick={close} variant="secondary">Cancel</Button>
-          <Button type="submit">Save</Button>
-        </div>
-      </form>
-    </SheetFrame>
-  );
+  const {nickname,saveNickname}=useProfilePhoto();const {settings}=useAppSettings();
+  const [error,setError]=useState("");const [saving,setSaving]=useState(false);
+  return <SheetFrame close={close} title="Edit Nickname"><form className="sheet-form" onSubmit={async event=>{
+    event.preventDefault();if(saving)return;const value=String(new FormData(event.currentTarget).get("nickname")??"").trim();
+    if(!value||value.length>32){setError("Enter a nickname between 1 and 32 characters.");return;}
+    setSaving(true);setError("");try{await saveNickname(value);close();}catch(cause){setError(cause instanceof Error?cause.message:"Could not save nickname.");}finally{setSaving(false);}
+  }}><label className="field-label">Nickname<input autoComplete="nickname" className="field-input" defaultValue={nickname??settings.nickname} maxLength={32} name="nickname" required/></label>
+  {error&&<p role="alert" className="form-error">{error}</p>}<div className="sheet-actions"><Button disabled={saving} onClick={close} variant="secondary">Cancel</Button><Button disabled={saving} type="submit">{saving?"Saving…":"Save"}</Button></div></form></SheetFrame>;
 }
 
 function ProfilePhotoForm({ close }: { close: () => void }) {
-  const { settings, profilePhoto, saveProfilePhoto } = useAppSettings();
+  const { settings } = useAppSettings();
+  const { profilePhoto, profileError, nickname, saveProfilePhoto } = useProfilePhoto();
+  const [crop,setCrop]=useState<{file:File;src:string}|null>(null);
+  const [processing,setProcessing]=useState(false);
+  const prepareAbort=useRef<AbortController|null>(null);
+  useEffect(()=>()=>prepareAbort.current?.abort(),[]);
+  useEffect(()=>()=>{if(crop)URL.revokeObjectURL(crop.src);},[crop]);
   const [selection, setSelection] = useState<{ file: File; preview: string } | null>(null);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -665,22 +645,13 @@ function ProfilePhotoForm({ close }: { close: () => void }) {
     };
   }, [selection]);
 
-  function choosePhoto(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Choose an image file.");
-      setSelection(null);
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Choose an image smaller than 5 MB.");
-      setSelection(null);
-      return;
-    }
-    setError("");
-    setSelection({ file, preview: URL.createObjectURL(file) });
+  async function beginCrop(file:File){
+    if(file.size>5*1024*1024){setError("Choose an image smaller than 5 MB.");return;}
+    prepareAbort.current?.abort();const controller=new AbortController();prepareAbort.current=controller;setProcessing(true);setError("");
+    try{const prepared=await prepareWishImage(file,()=>{},controller.signal,false);if(!controller.signal.aborted)setCrop({file:prepared,src:URL.createObjectURL(prepared)});}
+    catch(cause){if(!controller.signal.aborted)setError(wishUiError(cause,"photo"));}finally{if(!controller.signal.aborted)setProcessing(false);}
   }
+  function choosePhoto(event:ChangeEvent<HTMLInputElement>){const file=event.currentTarget.files?.[0];event.currentTarget.value="";if(file)void beginCrop(file);}
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -700,25 +671,31 @@ function ProfilePhotoForm({ close }: { close: () => void }) {
   }
 
   return (
-    <SheetFrame close={close} title="Change Profile Photo">
-      <form className="sheet-form" onSubmit={handleSubmit}>
+    <SheetFrame close={()=>crop?setCrop(null):close()} title={crop?"Зураг тайрах":"Change Profile Photo"}>
+      {crop&&<PhotoCropEditor file={crop.file} src={crop.src} index={0} total={1} onCancel={()=>setCrop(null)} onConfirm={file=>{setSelection({file,preview:URL.createObjectURL(file)});setCrop(null);}}/>}
+      <form hidden={!!crop} inert={!!crop||saving||processing} className="sheet-form" onSubmit={handleSubmit}>
         <div className="profile-photo-preview">
           {selection ? (
             <Image alt="Selected profile photo preview" fill sizes="96px" src={selection.preview} unoptimized />
           ) : profilePhoto ? (
             <Image alt="Current profile photo" fill sizes="96px" src={profilePhoto} unoptimized />
           ) : (
-            <span aria-hidden="true">{settings.nickname.trim().charAt(0).toLocaleUpperCase() || "Y"}</span>
+            <span aria-hidden="true">{(nickname ?? settings.nickname).trim().charAt(0).toLocaleUpperCase() || "Y"}</span>
           )}
         </div>
         <label className="field-label">
           Photo
           <input accept="image/*" className="field-input" onChange={choosePhoto} type="file" />
         </label>
-        {error && <p className="form-error" role="alert">{error}</p>}
+        <p className="text-sm text-[var(--muted)]">Зураг таны account-д хадгалагдаж, бусад төхөөрөмж дээр sync хийгдэнэ.</p>
+        <Button disabled={saving} variant="secondary" onClick={async()=>{
+          setSaving(true);setError("");
+          try{const blob=await readLegacyProfilePhoto();if(!blob)throw new Error("Энэ browser дээр хуучин зураг алга. Зургаа сонгоно уу.");await beginCrop(new File([blob],"previous-profile-photo",{type:blob.type}));}catch(cause){setError(cause instanceof Error?cause.message:"Could not sync the previous photo.");}finally{setSaving(false);}
+        }}>Хуучин зургийг тайрч sync хийх</Button>
+        {(error || profileError) && <p className="form-error" role="alert">{error || profileError}</p>}
         <div className="sheet-actions">
           <Button disabled={saving} onClick={close} variant="secondary">Cancel</Button>
-          <Button disabled={saving || !selection} type="submit">{saving ? "Saving…" : "Save"}</Button>
+          <Button disabled={saving || processing || !selection} type="submit">{saving ? "Saving…" : "Save"}</Button>
         </div>
       </form>
     </SheetFrame>
@@ -839,23 +816,14 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
   const actionsValue = useMemo(() => ({ openAddItem, openItem }), [openAddItem, openItem]);
 
   return (
+    <ProfilePhotoProvider key={userId} userId={userId}>
     <WorkspaceContext.Provider value={contextValue}>
       <WorkspaceActionsContext.Provider value={actionsValue}>
       <LayoutGroup id="yourwishes-shared-elements">
         <div className="app-frame">
           <WorkspaceBackground />
           <motion.header layoutRoot className="app-topbar">
-            {pathname !== "/" ? (
-              <MotionLink
-                aria-label="Back to Home"
-                className="home-control"
-                href="/"
-                whileTap={reduceMotion ? undefined : { scale: 0.92 }}
-                transition={{ type: "spring", stiffness: 440, damping: 30 }}
-              >
-                <Home aria-hidden="true" className="size-[19px]" />
-              </MotionLink>
-            ) : <span aria-hidden="true" />}
+            {pathname === "/partner" ? <LayoutGroup id="partner-profile" inherit={false}><PartnerAvatar /></LayoutGroup> : <span aria-hidden="true" />}
             <LayoutGroup id="profile-controls" inherit={false}>
               <ProfileControl editNickname={openNicknameEditor} changePhoto={openPhotoEditor} />
             </LayoutGroup>
@@ -896,7 +864,7 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
             </AnimatePresence>
           </main>
         </div>
-        <AppDock />
+        <AppNavigation />
         <ScrollBezel />
         <AnimatePresence initial={false} onExitComplete={() => { if (!sheet) releaseSource(); }}>
           {sheet === "add" && <ItemForm key="add" close={closeSheet} save={saveItem} />}
@@ -937,5 +905,6 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
       </LayoutGroup>
       </WorkspaceActionsContext.Provider>
     </WorkspaceContext.Provider>
+    </ProfilePhotoProvider>
   );
 }

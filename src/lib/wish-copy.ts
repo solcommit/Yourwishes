@@ -3,6 +3,10 @@ export const priorityLabel = { Common: "Байвал гоё", Uncommon: "Авм�
 
 export function wishUiError(error: unknown, action: "save" | "photo" | "delete" = "save"): string {
   const message = error instanceof Error ? error.message : "";
+  if (/database priority schema is outdated/.test(message)) return "Database-ийн priority тохиргоо хуучин байна. item_grade_priority SQL migration-ийг ажиллуулах шаардлагатай.";
+  if (/database currency schema is outdated/.test(message)) return "Database-ийн валютын тохиргоо хуучин байна. CNY currency SQL migration-ийг ажиллуулах шаардлагатай.";
+  if (/database save function is unavailable/.test(message)) return "Database-ийн хадгалах функц олдсонгүй. Wishlist storage SQL migration-ийг шалгах шаардлагатай.";
+  if (/database rejected wish ownership or permissions/.test(message)) return "Database хадгалах эрхийг зөвшөөрсөнгүй. Дахин нэвтрээд оролдоорой; үргэлжилбэл member policy-г шалгана.";
   if (/Photo-free wishes are not enabled/.test(message)) return "Зураггүй хадгалах боломж хараахан идэвхжээгүй байна.";
   if (/offline|fetch|network|refresh/i.test(message)) return "Холболтоо шалгаад дахин оролдоорой. Таны оруулсан зүйлс хэвээрээ байгаа.";
   if (/name between|name.*long/i.test(message)) return "Хүслийн нэрээ 100 тэмдэгтэд багтаан бичээрэй.";

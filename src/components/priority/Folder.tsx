@@ -2149,6 +2149,7 @@ const Folder = ({
     >
       <div
         className="folder-stage"
+        onDragStart={event => event.preventDefault()}
         role="button"
         tabIndex={0}
         aria-expanded={isOpen}

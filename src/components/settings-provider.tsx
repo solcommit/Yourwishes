@@ -62,14 +62,10 @@ type SettingsContextValue = {
   settings: AppSettings;
   updateSettings: (changes: Partial<AppSettings>) => void;
   triggerCelebration: () => void;
-  profilePhoto: string | null;
-  saveProfilePhoto: (file: File) => Promise<void>;
 };
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 const STORAGE_KEY = "yourwishes-settings";
-const PROFILE_DATABASE = "yourwishes-profile";
-const PROFILE_STORE = "photos";
 const LEGACY_BACKGROUND_STYLES: Record<string, BackgroundStyle> = {
   aurora: "dark-aurora",
   rose: "pink-cloud",
@@ -81,39 +77,6 @@ const LEGACY_BACKGROUND_STYLES: Record<string, BackgroundStyle> = {
 function normalizeBackgroundStyle(value: string | undefined): BackgroundStyle | null {
   if (BACKGROUND_PRESETS.some((preset) => preset.value === value)) return value as BackgroundStyle;
   return value ? LEGACY_BACKGROUND_STYLES[value] ?? null : null;
-}
-
-function openProfileDatabase() {
-  return new Promise<IDBDatabase>((resolve, reject) => {
-    if (!("indexedDB" in window)) {
-      reject(new Error("This browser does not support local profile photo storage."));
-      return;
-    }
-    const request = indexedDB.open(PROFILE_DATABASE, 1);
-    request.onupgradeneeded = () => {
-      request.result.createObjectStore(PROFILE_STORE);
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error ?? new Error("Could not open profile photo storage."));
-  });
-}
-
-async function readProfilePhoto() {
-  const database = await openProfileDatabase();
-  return new Promise<Blob | null>((resolve, reject) => {
-    const request = database.transaction(PROFILE_STORE, "readonly").objectStore(PROFILE_STORE).get("avatar");
-    request.onsuccess = () => {
-      const value = request.result;
-      // Keep reading older Blob avatars. Byte records also work in WebKit
-      // environments whose IndexedDB cannot persist File/Blob values.
-      if (value instanceof Blob) resolve(value);
-      else if (value?.bytes instanceof ArrayBuffer && typeof value.type === "string" && value.type.startsWith("image/") && value.bytes.byteLength <= 5 * 1024 * 1024) {
-        resolve(new Blob([value.bytes], { type: value.type }));
-      } else resolve(null);
-    };
-    request.onerror = () => reject(request.error ?? new Error("Could not load the saved profile photo."));
-    request.transaction?.addEventListener("complete", () => database.close(), { once: true });
-  });
 }
 
 export function useAppSettings() {
@@ -134,7 +97,6 @@ function SettingsMotion({ children }: { children: ReactNode }) {
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState(defaults);
-  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
   const { setTheme } = useTheme();
   const celebrationTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -198,46 +160,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    let active = true;
-    let objectUrl: string | null = null;
-    void readProfilePhoto()
-      .then((photo) => {
-        if (active && photo) {
-          objectUrl = URL.createObjectURL(photo);
-          setProfilePhoto(objectUrl);
-        }
-      })
-      .catch((error: unknown) => {
-        console.error("Could not load the saved Yourwishes profile photo.", error);
-      });
-    return () => {
-      active = false;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
-  }, []);
-
-  const saveProfilePhoto = useCallback(async (file: File) => {
-    if (!file.type.startsWith("image/")) throw new Error("Choose an image file.");
-    if (file.size > 5 * 1024 * 1024) throw new Error("Choose an image smaller than 5 MB.");
-    const bytes = await file.arrayBuffer();
-    const database = await openProfileDatabase();
-    await new Promise<void>((resolve, reject) => {
-      const transaction = database.transaction(PROFILE_STORE, "readwrite");
-      transaction.objectStore(PROFILE_STORE).put({ bytes, type: file.type }, "avatar");
-      transaction.oncomplete = () => resolve();
-      transaction.onerror = () => reject(transaction.error ?? new Error("Could not save the profile photo."));
-      transaction.onabort = () => reject(transaction.error ?? new Error("Saving the profile photo was cancelled."));
-      transaction.addEventListener("complete", () => database.close(), { once: true });
-      transaction.addEventListener("error", () => database.close(), { once: true });
-      transaction.addEventListener("abort", () => database.close(), { once: true });
-    });
-    setProfilePhoto((current) => {
-      if (current) URL.revokeObjectURL(current);
-      return URL.createObjectURL(file);
-    });
-  }, []);
-
-  useEffect(() => {
     if (!ready) return;
     document.documentElement.dataset.backgroundStyle = settings.backgroundStyle;
     document.documentElement.dataset.gradientIntensity = settings.gradientIntensity;
@@ -293,8 +215,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   }, [settings.ambientAnimation, settings.fluidAnimations]);
 
   const contextValue = useMemo(
-    () => ({ settings, updateSettings, triggerCelebration, profilePhoto, saveProfilePhoto }),
-    [settings, updateSettings, triggerCelebration, profilePhoto, saveProfilePhoto],
+    () => ({ settings, updateSettings, triggerCelebration }),
+    [settings, updateSettings, triggerCelebration],
   );
 
   return (

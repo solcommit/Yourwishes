@@ -25,6 +25,7 @@ import type { WishlistItem } from "@/lib/wishlist/types";
 import { formatWishPrice } from "@/lib/format-price";
 import { getWishImages } from "@/lib/wish-media";
 import { PrivateWishPhoto } from "./private-wish-photo";
+import { useProfilePhoto } from "./profile-photo-provider";
 import { PriorityFolders } from "./priority/priority-folders";
 import { WishBatch } from "./wish-batch";
 import { ColourfulText } from "./ui/colourful-text";
@@ -103,6 +104,7 @@ export function Dashboard() {
 }
 
 export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
+  const {partner}=useProfilePhoto();
   const { openItem } = useWorkspaceActions();
   const { items } = useWorkspace();
   const { settings } = useAppSettings();
@@ -115,7 +117,7 @@ export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
   return (
     <div className="page-enter">
       <div className="desktop-page-heading">
-        <PageTitle>{isMine ? "Mine" : "Partner"}</PageTitle>
+        <PageTitle>{isMine ? "Mine" : partner.nickname}</PageTitle>
         <div className="toolbar-actions">
           <div aria-label="Wishlist layout" className="layout-picker" role="group">
             <IconButton aria-pressed={!sortOpen && layout === "grid"} className={!sortOpen && layout === "grid" ? "selected" : ""} label="Grid layout" onClick={() => { setLayoutOverride("grid"); setSortOpen(false); }} variant="quiet">
@@ -746,7 +748,7 @@ export function SettingsPage() {
           <ChoiceRow label="Gradient" value={settings.gradientIntensity} onChange={(value) => change("gradientIntensity", value)} options={[
             { value: "off", label: "Off" }, { value: "subtle", label: "Subtle" }, { value: "vivid", label: "Vivid" },
           ]} />
-          <SwitchRow checked={settings.ambientAnimation} label="Ambient animation" onChange={(value) => change("ambientAnimation", value)} />
+          <SwitchRow checked={settings.ambientAnimation} label="Background motion" onChange={(value) => change("ambientAnimation", value)} />
         </section>
         <section className="settings-group" aria-label="Wishlist">
           <ChoiceRow label="Default layout" value={settings.defaultLayout} onChange={(value) => change("defaultLayout", value)} options={[
@@ -757,7 +759,7 @@ export function SettingsPage() {
           ]} />
         </section>
         <section className="settings-group" aria-label="Motion and display">
-          <SwitchRow checked={settings.fluidAnimations} label="Fluid animations" onChange={(value) => change("fluidAnimations", value)} />
+          <SwitchRow checked={settings.fluidAnimations} label="Animations" onChange={(value) => change("fluidAnimations", value)} />
           <SwitchRow checked={settings.scrollBezel} label="Scroll bezel" onChange={(value) => change("scrollBezel", value)} />
           <SwitchRow checked={settings.reduceTransparency} label="Reduce transparency" onChange={(value) => change("reduceTransparency", value)} />
           <SwitchRow checked={settings.autoPlayVideos} label="Auto-play videos" onChange={(value) => change("autoPlayVideos", value)} />

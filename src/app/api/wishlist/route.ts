@@ -40,18 +40,22 @@ export async function POST(request: Request) {
         const table = diagnostic.table ?? error.message.match(/relation "([a-z_]+)"/)?.[1];
         const constraint = diagnostic.constraint ?? error.message.match(/constraint "([a-z_]+)"/)?.[1];
         const safeIdentifier = (value: string | undefined) => value && /^[a-z_]{1,63}$/.test(value) ? value : null;
-        console.warn("[wishlist.save]", {
+        console.warn("[wishlist.save]", JSON.stringify({
           stage, code: error.code,
           table: safeIdentifier(table), constraint: safeIdentifier(constraint),
           detail: error.details ? "[redacted: database detail may contain private row data]" : null,
           payload: { priority: input.priority, currency: input.currency, imageCount: input.photos.length, hasPrice: input.price !== null },
           photosMigrationRequired,
-        });
+        }));
       }
       // Only staged, uncommitted objects have queue entries. A committed save
       // removes those entries atomically, including when its HTTP reply was lost.
       await supabase.rpc("expire_wish_uploads", { p_paths: input.photos.map((photo) => photo.path) });
       scheduleImageCleanup(supabase, userId, true);
+      if (error.code === "23514" && /wishlist_items_priority_check/.test(error.message)) throw new WishlistError("The database priority schema is outdated. Apply the item_grade_priority SQL migration.", 503);
+      if (error.code === "23514" && /wishlist_items_currency_check/.test(error.message)) throw new WishlistError("The database currency schema is outdated. Apply the CNY currency SQL migration.", 503);
+      if (error.code === "PGRST202" || error.code === "42883") throw new WishlistError("The database save function is unavailable. Check the wishlist storage SQL migration.", 503);
+      if (error.code === "42501") throw new WishlistError("The database rejected wish ownership or permissions. Please sign in again and check member policies.", 403);
       if (photosMigrationRequired) throw new WishlistError("Photo-free wishes are not enabled in the database yet.", 503);
       throw new WishlistError(error.code === "40001" || error.code === "23505"
       ? "This wish changed or was already saved. Refresh the list before retrying."
@@ -60,7 +64,7 @@ export async function POST(request: Request) {
     const cleaned = scheduleImageCleanup(supabase, userId, true);
     return json({ saved: true, warning: cleaned ? "" : "Wish saved. Unused photo cleanup will retry automatically." });
   } catch (error) {
-    if (process.env.NODE_ENV === "development") console.warn("[wishlist.save.failed]", { stage, status: error instanceof WishlistError ? error.status : 500 });
+    if (process.env.NODE_ENV === "development") console.warn("[wishlist.save.failed]", JSON.stringify({ stage, status: error instanceof WishlistError ? error.status : 500 }));
     return failure(error);
   }
 }

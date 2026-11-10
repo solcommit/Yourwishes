@@ -5,7 +5,7 @@ import { PRIORITY_OPTIONS } from "../wish-form-options";
 import { useAppSettings } from "../settings-provider";
 import type { WishlistItem } from "@/lib/wishlist/types";
 import { getWishImages } from "@/lib/wish-media";
-import { WishFlightOrigin } from "../wish-batch";
+import { WishBatch, WishFlightOrigin } from "../wish-batch";
 import { PrivateWishPhoto } from "../private-wish-photo";
 import { Button } from "../ui/button";
 import Folder from "./Folder";
@@ -43,7 +43,7 @@ export function PriorityFolders({ items, render, onOpenItem }: { items: Wishlist
   return <WishFlightOrigin.Provider value={getOrigin}><section ref={root} aria-label="Partner wishes by priority" className="priority-browser" style={active && slot ? {minHeight:slot.minHeight} : undefined}
     onKeyDown={event => { if(event.key === "Escape" && selected) { event.preventDefault(); choose(null); } }}>
     {active && <div className="priority-back-row"><Button onClick={() => choose(null)} variant="secondary">← Бүх ангилал</Button><span className="priority-folder-count">{filtered.length} wishes</span></div>}
-    <div className="priority-folders" data-active={!!selected} style={active && slot ? {paddingTop:slot.top} : undefined}>
+    <WishFlightOrigin.Provider value={null}><WishBatch className="priority-folders" data-active={!!selected} style={active && slot ? {paddingTop:slot.top} : undefined}>
       <AnimatePresence mode="popLayout" initial={false}>
       {PRIORITY_OPTIONS.filter(option => !selected || option.value === selected).map(option => {
         const group = items.filter(item => item.priority === option.value);
@@ -59,7 +59,7 @@ export function PriorityFolders({ items, render, onOpenItem }: { items: Wishlist
         </motion.div>;
       })}
       </AnimatePresence>
-    </div>
+    </WishBatch></WishFlightOrigin.Provider>
     {active && <section className="priority-folder-content" aria-label={active.label}>
       <h2 className="priority-folder-heading" data-priority={active.value}><span className="priority-dot" />{active.label}</h2>
       {filtered.length ? render(filtered) : <p className="priority-folder-empty" role="status">Энэ ангилалд хүсэл алга.</p>}
