@@ -1,4 +1,4 @@
-export type WishCurrency = "USD" | "MNT";
+export type WishCurrency = "USD" | "MNT" | "CNY";
 export type WishPhoto = { path: string; name: string };
 export type WishlistItem = {
   id: string;
@@ -7,7 +7,7 @@ export type WishlistItem = {
   price: number | null;
   currency: WishCurrency;
   url: string;
-  priority: "Low" | "Medium" | "High";
+  priority: "Common" | "Uncommon" | "Rare" | "Epic" | "Legendary";
   category: string;
   createdAt: string;
   updatedAt: string;
@@ -49,8 +49,8 @@ export function validateWish(input: WishInput) {
   if (!input.name.trim() || input.name.trim().length > 100) throw new Error("Enter a name between 1 and 100 characters.");
   if (input.description.length > 500 || input.category.length > 64) throw new Error("Description or category is too long.");
   if (input.price !== null && (!Number.isFinite(input.price) || input.price < 0 || input.price >= 1e12 || Number(input.price.toFixed(2)) !== input.price)) throw new Error("Enter a nonnegative price with at most two decimal places.");
-  if (!["USD", "MNT"].includes(input.currency)) throw new Error("Choose USD or MNT.");
-  if (!["Low", "Medium", "High"].includes(input.priority)) throw new Error("Choose a valid priority.");
+  if (!["USD", "MNT", "CNY"].includes(input.currency)) throw new Error("Choose USD, MNT, or CNY.");
+  if (!["Common", "Uncommon", "Rare", "Epic", "Legendary"].includes(input.priority)) throw new Error("Choose a valid priority.");
   if (input.url) {
     let url: URL;
     try { url = new URL(input.url); } catch { throw new Error("Enter a valid HTTP or HTTPS product URL."); }

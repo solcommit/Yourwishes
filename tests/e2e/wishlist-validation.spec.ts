@@ -3,7 +3,7 @@ import { validateWish, type WishInput } from "../../src/lib/wishlist/types";
 
 const valid = (): WishInput => ({
   id: "00000000-0000-4000-8000-000000000001", name: "A real wish", description: "",
-  price: 12.34, currency: "USD", url: "https://example.com/product", priority: "Medium",
+  price: 12.34, currency: "USD", url: "https://example.com/product", priority: "Rare",
   category: "Books", photos: [{ path: "preview", name: "photo.png" }], expectedUpdatedAt: null,
 });
 

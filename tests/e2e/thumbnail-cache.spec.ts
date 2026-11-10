@@ -44,3 +44,20 @@ test("thumbnail cache isolates readers, deduplicates work and clears pending wor
   await privateThumbnail!("C", "shared/path", 320, download);
   expect(downloads).toBe(5);
 });
+
+test("durable thumbnails bypass original download and conversion", async () => {
+  const output = await build({ entryPoints: ["src/lib/wishlist/thumbnail.ts"], bundle: true, write: false, platform: "node", format: "cjs", packages: "external",
+    plugins: [{name:"server-only-test",setup(builder){builder.onResolve({filter:/^server-only$/},()=>({path:"empty",namespace:"fixture"}));builder.onLoad({filter:/.*/,namespace:"fixture"},()=>({contents:""}));}}] });
+  const loaded = {exports:{}};
+  new Function("require","module",output.outputFiles[0].text)(createRequire(resolve("package.json")),loaded);
+  const cache = loaded.exports as {privateThumbnail:(user:string,path:string,width:number,download:()=>Promise<Blob>,durable:()=>Promise<Buffer|null>)=>Promise<Buffer>};
+  let originals=0, variants=0;
+  const bytes=await sharp({create:{width:320,height:200,channels:3,background:"#4488cc"}}).webp().toBuffer();
+  const download=async()=>{originals++;throw Error("Original must not be downloaded");};
+  const durable=async()=>{variants++;return bytes;};
+  expect((await cache.privateThumbnail("A","immutable",320,download,durable)).equals(bytes)).toBe(true);
+  await cache.privateThumbnail("A","immutable",320,download,durable);
+  expect(originals).toBe(0);expect(variants).toBe(1);
+  await cache.privateThumbnail("B","immutable",320,download,durable);
+  expect(variants).toBe(2);
+});

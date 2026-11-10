@@ -1,3 +1,4 @@
+import { normalizeProductUrl } from "@/lib/product-url";
 import { failure, fetchWishes, json, readLimitedBody, sameOrigin, scheduleImageCleanup, WishlistError, wishlistSession } from "@/lib/wishlist/server";
 import { UUID_PATTERN, validateWish, type WishInput } from "@/lib/wishlist/types";
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     stage = "validation";
     const raw = new TextDecoder().decode(await readLimitedBody(request, 16_384));
     let input: WishInput;
-    try { input = JSON.parse(raw); validateWish(input); } catch (error) { throw new WishlistError(error instanceof Error ? error.message : "Invalid wish."); }
+    try { input = JSON.parse(raw); if (typeof input?.url === "string") input.url = normalizeProductUrl(input.url); validateWish(input); } catch (error) { throw new WishlistError(error instanceof Error ? error.message : "Invalid wish."); }
     for (const photo of input.photos) {
       if (!photo.path.startsWith(`${userId}/${input.id}/`) || !photo.name || photo.name.length > 255) throw new WishlistError("Invalid image ownership.", 403);
     }

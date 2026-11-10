@@ -1,7 +1,7 @@
 import type { WishCurrency } from "@/lib/wishlist/types";
 
 export function normalizeWishCurrency(currency: unknown): WishCurrency {
-  return currency === "MNT" ? "MNT" : "USD";
+  return currency === "MNT" || currency === "CNY" ? currency : "USD";
 }
 
 export function formatWishPrice(price: number, currency: unknown) {

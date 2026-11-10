@@ -41,7 +41,7 @@ function limited<T>(work: Promise<T>, timeout: number, signal?: AbortSignal): Pr
   });
 }
 
-function fallbackDecode(file: File, signal?: AbortSignal): Promise<Blob> {
+function fallbackDecode(file: File, signal?: AbortSignal, square = true): Promise<Blob> {
   if (signal?.aborted) return Promise.reject(aborted());
   // A dedicated per-photo worker also owns the library's nested decoder worker.
   // Termination bounds hangs, releases decoder memory, and cancels on modal close.
@@ -58,11 +58,11 @@ function fallbackDecode(file: File, signal?: AbortSignal): Promise<Blob> {
     worker.onerror = (event) => { event.preventDefault(); finish(); reject(new Error("HEIC processing is unavailable on this device. Try again or export a JPEG from Photos.")); };
     signal?.addEventListener("abort", cancel, { once: true });
     if (signal?.aborted) { cancel(); return; }
-    worker.postMessage({ file });
+    worker.postMessage({ file, square });
   });
 }
 
-export async function prepareWishImage(file: File, onProgress: (message: string) => void = () => {}, signal?: AbortSignal): Promise<File> {
+export async function prepareWishImage(file: File, onProgress: (message: string) => void = () => {}, signal?: AbortSignal, square = true): Promise<File> {
   if (signal?.aborted) throw aborted();
   if (!file.size || file.size > MAX_SOURCE_BYTES) throw new Error("Choose photos up to 32 MiB each. Larger photos can be exported at a smaller size from Photos.");
   onProgress("Checking photo…");
@@ -81,8 +81,8 @@ export async function prepareWishImage(file: File, onProgress: (message: string)
     catch (error) { if (!heif || signal?.aborted) throw error; }
     if (decoded) {
       checkDimensions(decoded);
-      output = await encodePhoto(decoded.source, decoded.width, decoded.height, 1, raster ?? "image/jpeg");
-    } else output = await fallbackDecode(file, signal);
+      output = await encodePhoto(decoded.source, decoded.width, decoded.height, 1, raster ?? "image/jpeg", square);
+    } else output = await fallbackDecode(file, signal, square);
   } catch (error) {
     if (signal?.aborted) throw aborted();
     throw new Error(error instanceof Error && /too large|timed out|HEIC|smaller/.test(error.message) ? error.message : "This photo could not be processed. Try selecting it again or export a JPEG from Photos.");
@@ -95,6 +95,7 @@ export async function prepareWishImage(file: File, onProgress: (message: string)
   if (!type || (heif && type !== "image/jpeg" && type !== "image/webp") || output.type !== type) throw new Error("Photo conversion produced an invalid image. Please try again.");
   const size = rasterDimensions(resultBytes);
   checkDimensions(size);
+  if (square && size.width !== size.height) throw new Error("Photo must be cropped to a square. Please try again.");
   if (Math.max(size.width, size.height) > MAX_OUTPUT_EDGE) throw new Error("Photo resizing failed. Please try again.");
   const verified = await nativeDecode(output, signal);
   try { if (verified.width !== size.width || verified.height !== size.height) throw new Error("The processed photo's dimensions are invalid."); }
@@ -104,9 +105,38 @@ export async function prepareWishImage(file: File, onProgress: (message: string)
   return new File([output], `${basename}.${extension}`, { type });
 }
 
-export async function prepareWishImages(files: File[], existingCount: number, onProgress: (message: string) => void, signal?: AbortSignal): Promise<File[]> {
+export async function prepareWishImages(files: File[], existingCount: number, onProgress: (message: string) => void, signal?: AbortSignal, onCrop?: (file: File, index: number, total: number) => Promise<File>): Promise<File[]> {
   if (existingCount + files.length > 5) throw new Error("A wish can have up to 5 images.");
   const processed: File[] = [];
-  for (let i = 0; i < files.length; i++) processed.push(await prepareWishImage(files[i], (state) => onProgress(`Photo ${i + 1} of ${files.length}: ${state}`), signal));
+  for (let i = 0; i < files.length; i++) {
+    const file = await prepareWishImage(files[i], (state) => onProgress(`Photo ${i + 1} of ${files.length}: ${state}`), signal, !onCrop);
+    if (signal?.aborted) throw aborted();
+    processed.push(onCrop ? await onCrop(file, i + 1, files.length) : file);
+    if (signal?.aborted) throw aborted();
+  }
   return processed;
+}
+
+
+export type SquareCropArea = { x: number; y: number; width: number; height: number };
+
+/** Export the exact chosen area from an already validated/oriented crop source. */
+export async function cropWishImage(file: File, area: SquareCropArea, signal?: AbortSignal): Promise<File> {
+  if (signal?.aborted) throw aborted();
+  const values = [area.x, area.y, area.width, area.height];
+  if (values.some((value) => !Number.isFinite(value)) || area.x < 0 || area.y < 0 || area.width < 1 || area.height < 1 || Math.abs(area.width - area.height) > 1) throw new Error("Invalid square crop.");
+  const decoded = await nativeDecode(file, signal);
+  const canvas = document.createElement("canvas");
+  try {
+    const edge = Math.min(decoded.width, decoded.height, Math.round(Math.min(area.width, area.height)));
+    if (area.x + edge > decoded.width + 1 || area.y + edge > decoded.height + 1) throw new Error("Crop is outside the photo.");
+    canvas.width = edge; canvas.height = edge;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Image processing is unavailable.");
+    ctx.drawImage(decoded.source, Math.min(area.x, decoded.width - edge), Math.min(area.y, decoded.height - edge), edge, edge, 0, 0, edge, edge);
+    const type = file.type === "image/png" ? "image/png" : file.type === "image/webp" ? "image/webp" : "image/jpeg";
+    const blob = await encodePhoto(canvas, edge, edge, 1, type);
+    if (signal?.aborted) throw aborted();
+    return new File([blob], file.name, { type: blob.type });
+  } finally { decoded.close(); canvas.width = 1; canvas.height = 1; }
 }

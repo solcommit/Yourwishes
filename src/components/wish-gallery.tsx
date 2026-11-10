@@ -1,6 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { Loader } from "./ui/loader";
+import { invalidatePrivatePhoto, privatePhoto } from "@/lib/private-photo-cache";
+import { toast } from "sonner";
+import { wishLayoutTransition } from "@/lib/wish-transition";
+import { useAppSettings } from "./settings-provider";
 import { ChevronLeft } from "lucide-react";
 import { motion, useIsPresent, useReducedMotion } from "motion/react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
@@ -18,7 +23,8 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
   images: string[]; preview?: string; sharedId?: string; name: string;
 }) {
   const present = useIsPresent();
-  const reduceMotion = useReducedMotion();
+  const { settings } = useAppSettings();
+  const reduceMotion = useReducedMotion() || !settings.fluidAnimations;
   const [selected, setSelected] = useState(0);
   const [displayed, setDisplayed] = useState({ index: 0, src: preview || "" });
   const [error, setError] = useState(false);
@@ -40,15 +46,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
     const controller = new AbortController();
     const entry: Photo = { url: "", controller, promise: Promise.resolve(""), ready: false };
     entry.promise = (async () => {
-      const response = await fetch(src, { credentials: "same-origin", cache: "no-store", signal: controller.signal });
-      if (response.status === 401 || response.redirected) {
-        window.dispatchEvent(new Event("yourwishes-session-ending"));
-        window.location.replace("/sign-in");
-        throw new Error("Session ended");
-      }
-      if (!response.ok) throw new Error("Photo unavailable");
-      const blob = await response.blob();
-      if (!blob.type.startsWith("image/") || !blob.size || blob.size > 5 * 1024 * 1024) throw new Error("Invalid photo");
+      const blob = await privatePhoto(src);
       if (controller.signal.aborted) throw new Error("Canceled");
       entry.url = URL.createObjectURL(blob);
       const decoder = new globalThis.Image();
@@ -67,6 +65,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       }
       return entry.url;
     })().catch((cause) => {
+      if (!controller.signal.aborted) invalidatePrivatePhoto(src);
       discard(entry);
       if (cache.current.get(src) === entry) cache.current.delete(src);
       throw cause;
@@ -100,7 +99,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       const adjacent = images[active + 1] || images[active - 1];
       // One neighbor, after the selected image and opening morph have settled.
       if (adjacent) prefetch = setTimeout(() => { void load(adjacent).catch(() => {}); }, 350);
-    }).catch(() => { if (current) setError(true); }); });
+    }).catch(() => { if (current) { setError(true); toast.error("Photo could not load", { id: "wish-photo-error", description: "Retry the photo or check your connection." }); } }); });
     return () => { current = false; clearTimeout(prefetch); };
   }, [images, active, load, retry, present]);
 
@@ -120,15 +119,13 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
   }, [images.length, show]);
 
   const cover = cache.current.get(images[0]);
-  const exitingCover = !present && (cover?.ready ? cover.url : preview);
+  const exitingCover = !present && (preview || (cover?.ready ? cover.url : undefined));
   const src = exitingCover || displayed.src;
   const shownIndex = exitingCover ? 0 : displayed.index;
   const busy = !ready || active !== displayed.index;
   return (
-    <motion.div className="detail-image-frame" ref={frame} layoutId={sharedId}
-      onLayoutAnimationStart={() => { const sheet = frame.current?.closest<HTMLElement>(".sheet-panel"); if (sheet) sheet.style.overflow = "visible"; }}
-      onLayoutAnimationComplete={() => { const sheet = frame.current?.closest<HTMLElement>(".sheet-panel"); if (sheet) sheet.style.overflow = ""; }}
-      animate={{ borderRadius: "18px" }} transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 32 }}
+    <motion.div className="detail-image-frame" ref={frame} layoutId={reduceMotion ? undefined : sharedId}
+      style={{ borderRadius: 16 }} transition={reduceMotion ? { duration: 0 } : wishLayoutTransition}
       role="group" aria-label={`Photo ${shownIndex + 1} of ${images.length}`} aria-roledescription={images.length > 1 ? "Image gallery" : undefined}
       aria-live="polite"
       aria-busy={busy} tabIndex={images.length > 1 ? 0 : undefined}
@@ -137,7 +134,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       onTouchEnd={(event) => { const start = touch.current, end = event.changedTouches[0]; touch.current = null; if (!start || !end || images.length < 2) return; const x = end.clientX - start.x, y = end.clientY - start.y; if (Math.abs(x) > 40 && Math.abs(x) > Math.abs(y) * 1.25) show(x < 0 ? 1 : -1); }}
       onTouchCancel={() => { touch.current = null; }}>
       {src ? <Image key={src} className={`detail-image ${navigated.current && present && !reduceMotion ? "gallery-photo-enter" : ""}`} data-direction={direction.current < 0 ? "back" : "forward"} src={src} alt={`${name}, photo ${shownIndex + 1}`} width={960} height={960} unoptimized draggable={false} /> : <span className="detail-image detail-image-empty" />}
-      {busy && !error && <span className="gallery-status" role="status">Loading photo…</span>}
+      {busy && !error && <span className="gallery-loading"><Loader label="Loading photo…" /></span>}
       {error && <button className="gallery-status" onClick={() => { setError(false); setRetry((value) => value + 1); }} type="button">Unable to load. Retry</button>}
       {images.length > 1 && <>
         <button aria-label="Previous photo" className="detail-gallery-arrow detail-gallery-previous" onClick={() => show(-1)} type="button"><ChevronLeft aria-hidden="true" className="size-5" /></button>

@@ -3,6 +3,7 @@
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { WishlistItem, WishInput } from "@/lib/wishlist/types";
+import { prunePrivatePhotos } from "@/lib/private-photo-cache";
 import { reconcileWishes } from "@/lib/wishlist/reconcile";
 
 const REVALIDATE_MS = 30_000;
@@ -54,6 +55,7 @@ export function useWishlistData(userId: string) {
           window.location.replace("/sign-in");
           return;
         }
+        prunePrivatePhotos(new Set(result.items.flatMap((item) => item.images ?? (item.image ? [item.image] : []))));
         failures.current = 0;
         startTransition(() => {
           setItems((current) => reconcileWishes(current, result.items));

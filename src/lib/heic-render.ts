@@ -14,16 +14,19 @@ export function orientationMatrix(orientation: number, width: number, height: nu
   }
 }
 
-export async function encodePhoto(source: CanvasImageSource, width: number, height: number, orientation = 1, type: RasterType = "image/jpeg"): Promise<Blob> {
+export async function encodePhoto(source: CanvasImageSource, width: number, height: number, orientation = 1, type: RasterType = "image/jpeg", square = true): Promise<Blob> {
   checkDimensions({ width, height });
   const swap = orientation >= 5 && orientation <= 8;
   const orientedWidth = swap ? height : width;
   const orientedHeight = swap ? width : height;
-  let scale = Math.min(1, MAX_OUTPUT_EDGE / Math.max(width, height));
+  const edge = Math.min(orientedWidth, orientedHeight);
+  const targetWidth = square ? edge : orientedWidth;
+  const targetHeight = square ? edge : orientedHeight;
+  let scale = Math.min(1, MAX_OUTPUT_EDGE / Math.max(targetWidth, targetHeight));
   // Both browser paths bake orientation into pixels and copy no original metadata.
   for (let attempt = 0; attempt < 8; attempt++, scale *= 0.8) {
-    const w = Math.max(1, Math.round(orientedWidth * scale));
-    const h = Math.max(1, Math.round(orientedHeight * scale));
+    const w = Math.max(1, Math.round(targetWidth * scale));
+    const h = Math.max(1, Math.round(targetHeight * scale));
     const inDocument = typeof document !== "undefined";
     const canvas = inDocument ? document.createElement("canvas") : new OffscreenCanvas(w, h);
     canvas.width = w; canvas.height = h;
@@ -32,7 +35,8 @@ export async function encodePhoto(source: CanvasImageSource, width: number, heig
       if (!ctx) throw new Error("Image processing is unavailable in this browser.");
       if (type === "image/jpeg") { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
       ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-      ctx.scale(w / orientedWidth, h / orientedHeight);
+      ctx.scale(w / targetWidth, h / targetHeight);
+      if (square) ctx.translate(-(orientedWidth - edge) / 2, -(orientedHeight - edge) / 2);
       ctx.transform(...orientationMatrix(orientation, width, height));
       ctx.drawImage(source, 0, 0, width, height);
       for (const quality of type === "image/png" ? [0.9] : [0.9, 0.84, 0.78]) {

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, LayoutGroup, animate, motion, useIsPresent, useMotionValueEvent, useScroll, useSpring, useReducedMotion } from "motion/react";
@@ -24,8 +25,10 @@ import { prepareWishImages } from "@/lib/prepare-wish-image";
 import { createClientUuid } from "@/lib/client-uuid";
 import { AppDock } from "@/components/app-dock";
 import { WishGallery } from "@/components/wish-gallery";
-import { wishPhotoProgress, wishUiError } from "@/lib/wish-copy";
+import { wishLayoutTransition } from "@/lib/wish-transition";
+import { priorityLabel, wishPhotoProgress, wishUiError } from "@/lib/wish-copy";
 import { useWishlistData, wishRequest } from "@/components/use-wishlist-data";
+import { normalizeProductUrl } from "@/lib/product-url";
 import { formatWishPrice, normalizeWishCurrency } from "@/lib/format-price";
 import {
   getWishImages,
@@ -35,9 +38,17 @@ import {
 } from "@/lib/wish-media";
 import { useAppSettings } from "@/components/settings-provider";
 import { Button, IconButton } from "@/components/ui/button";
+import { WorkspaceBackground } from "./backgrounds/workspace-background";
+import { FormSelect } from "@/components/ui/select";
+import { CURRENCY_OPTIONS, PRIORITY_OPTIONS } from "./wish-form-options";
 import { SignOutButton } from "@/components/sign-out-button";
 
+const PhotoCropEditor = dynamic(() => import("./photo-crop-editor").then((module) => module.PhotoCropEditor), {
+  loading: () => <p role="status">Зураг тайрах хэсгийг ачаалж байна…</p>,
+});
+
 type WorkspaceContextValue = {
+  userId: string;
   items: WishlistItem[];
   loading: boolean;
   error: string;
@@ -288,6 +299,8 @@ function SheetFrame({
     document.body.style.overflow = "hidden";
     sheetRef.current?.querySelector<HTMLElement>("input, button")?.focus();
     function onKeyDown(event: KeyboardEvent) {
+      if (event.defaultPrevented) return;
+      if (event.key === "Escape" && document.querySelector("[data-select-content]")) return;
       if (event.key === "Escape") close();
       if (event.key !== "Tab" || !sheetRef.current) return;
       const focusable = Array.from(
@@ -322,20 +335,25 @@ function SheetFrame({
       layoutRoot
       animate={{ opacity: 1 }}
       className={`sheet-backdrop ${sharedItemId ? "shared-item-backdrop" : ""}`}
-      exit={{ opacity: 0 }}
-      initial={{ opacity: 0 }}
+      exit={sharedItemId ? undefined : { opacity: 0 }}
+      initial={sharedItemId ? false : { opacity: 0 }}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) close();
       }}
       transition={{ duration: reduceMotion ? 0 : 0.18 }}
     >
+      {sharedItemId && <motion.div aria-hidden="true" className="shared-item-scrim"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        transition={{ duration: reduceMotion ? 0 : 0.2 }} />}
       <motion.section
         layoutScroll
         lang={language}
         aria-labelledby={titleId}
         aria-modal="true"
         className={`sheet-panel ${sharedItemId ? "shared-item-sheet" : ""} ${sharedAdd ? "shared-add-sheet" : ""}`}
-        layoutId={sharedAdd ? "home-add-surface" : undefined}
+        layoutId={sharedItemId && !reduceMotion ? `${sharedItemId}-card` : sharedAdd ? "home-add-surface" : undefined}
+        data-shared-wish-card={sharedItemId}
+        style={sharedItemId ? { borderRadius: 20 } : undefined}
         ref={sheetRef}
         role="dialog"
         initial={sharedItemId || sharedAdd ? false : { y: reduceMotion ? 0 : 28, scale: reduceMotion ? 1 : 0.98 }}
@@ -344,7 +362,7 @@ function SheetFrame({
         transition={reduceMotion
           ? { duration: 0 }
           : sharedItemId
-            ? { type: "spring", stiffness: 300, damping: 32, mass: 0.9 }
+            ? { layout: wishLayoutTransition, default: wishLayoutTransition }
             : sharedAdd
               ? {
                   layout: { type: "spring", duration: 0.48, bounce: 0.04 },
@@ -406,6 +424,7 @@ function ItemForm({
   const [progress, setProgress] = useState("");
   const [processing, setProcessing] = useState(false);
   const [failedSelection, setFailedSelection] = useState<File[]>([]);
+  const [cropRequest, setCropRequest] = useState<{ file: File; src: string; index: number; total: number; confirm: (file: File) => void; cancel: () => void } | null>(null);
   const selecting = useRef(false);
   const selectionAbort = useRef<AbortController | null>(null);
   const mounted = useRef(true);
@@ -428,6 +447,24 @@ function ItemForm({
     void processSelection(files);
   }
 
+  function requestCrop(file: File, index: number, total: number, signal: AbortSignal): Promise<File> {
+    if (signal.aborted) return Promise.reject(new DOMException("Canceled", "AbortError"));
+    return new Promise((resolve, reject) => {
+      const src = URL.createObjectURL(file);
+      let done = false;
+      const finish = (result?: File) => {
+        if (done) return; done = true;
+        signal.removeEventListener("abort", cancel);
+        URL.revokeObjectURL(src);
+        if (mounted.current) setCropRequest(null);
+        if (result) resolve(result); else reject(new DOMException("Canceled", "AbortError"));
+      };
+      const cancel = () => finish();
+      signal.addEventListener("abort", cancel, { once: true });
+      setCropRequest({ file, src, index, total, confirm: (result) => finish(result), cancel });
+    });
+  }
+
   async function processSelection(files: File[]) {
     if (selecting.current || submitting.current) return;
     if (images.length + files.length > MAX_WISH_IMAGES) {
@@ -437,13 +474,14 @@ function ItemForm({
     selecting.current = true; setProcessing(true); setError(""); setFailedSelection([]);
     const controller = new AbortController(); selectionAbort.current = controller;
     try {
-      const processed = await prepareWishImages(files, images.length, (state) => { if (mounted.current) setProgress(wishPhotoProgress(state)); }, controller.signal);
+      const processed = await prepareWishImages(files, images.length, (state) => { if (mounted.current) setProgress(wishPhotoProgress(state)); }, controller.signal, (file, index, total) => requestCrop(file, index, total, controller.signal));
       if (!mounted.current || controller.signal.aborted) return;
       const urls = processed.map((file) => URL.createObjectURL(file));
       urls.forEach((url, index) => { createdUrls.current.add(url); localFiles.current.set(url, processed[index]); });
       setImages((current) => [...current, ...urls]);
       setMediaNames((current) => [...current, ...processed.map((file) => file.name)]);
     } catch (cause) {
+      if (cause instanceof DOMException && cause.name === "AbortError") return;
       if (mounted.current && !controller.signal.aborted) {
         setFailedSelection(files);
         setError(wishUiError(cause, "photo"));
@@ -469,7 +507,7 @@ function ItemForm({
       photos: images.map((src, index) => ({ path: src, name: mediaNames[index] || "Photo" })),
       expectedUpdatedAt: item?.updatedAt ?? null,
     };
-    try { validateWish(input); } catch (cause) { setError(wishUiError(cause)); return; }
+    try { input.url = normalizeProductUrl(input.url); validateWish(input); } catch (cause) { setError(wishUiError(cause)); return; }
     submitting.current = true; setSaving(true); setError("");
     try {
       for (let index = 0; index < images.length; index++) {
@@ -496,9 +534,10 @@ function ItemForm({
     finally { submitting.current = false; setSaving(false); setProgress(""); }
   }
   return (
-    <SheetFrame close={() => { if (!submitting.current) close(); }} sharedAdd={!item} title={item ? "Edit wish" : "Add wish"}>
-      {progress && <p className="wish-media-hint px-6" role="status">{progress}</p>}
-      <form inert={saving || processing} aria-busy={saving || processing} className={`sheet-form ${item ? "" : "add-sheet-form"}`} onSubmit={handleSubmit}
+    <SheetFrame close={() => { if (cropRequest) cropRequest.cancel(); else if (!submitting.current) close(); }} sharedAdd={!item} title={cropRequest ? "Зураг тайрах" : item ? "Edit wish" : "Add wish"}>
+      {cropRequest && <PhotoCropEditor key={cropRequest.src} file={cropRequest.file} src={cropRequest.src} index={cropRequest.index} total={cropRequest.total} onConfirm={cropRequest.confirm} onCancel={cropRequest.cancel} />}
+      {!cropRequest && progress && <p className="px-6" role="status">{progress}</p>}
+      <form hidden={!!cropRequest} inert={saving || processing} aria-busy={saving || processing} className={`sheet-form ${item ? "" : "add-sheet-form"}`} onSubmit={handleSubmit}
         onInvalid={(event) => { const field = event.target; if (field instanceof HTMLInputElement) field.setCustomValidity(field.name === "name" ? "Хүслийн нэрээ бичээрэй." : field.name === "url" ? "Бүтээгдэхүүний зөв холбоос оруулна уу." : "Зөв үнэ оруулна уу."); }}
         onInput={(event) => { const field = event.target; if (field instanceof HTMLInputElement) field.setCustomValidity(""); }}>
         <label className="field-label">Хүслийн нэр
@@ -507,21 +546,20 @@ function ItemForm({
         <label className="field-label">Тайлбар
           <textarea className="field-input min-h-20 resize-y" defaultValue={item?.description} maxLength={500} name="description" rows={2} />
         </label>
-        <div className="grid grid-cols-[1fr_130px] gap-3">
+        <div className="price-currency-row">
           <label className="field-label">Үнэ
             <input className="field-input" defaultValue={item?.price ?? ""} min="0" name="price" placeholder="0" step={currency === "MNT" ? "1" : "0.01"} type="number" />
           </label>
           <label className="field-label">Валют
-            <select className="field-input" onChange={(event) => setCurrency(event.currentTarget.value as WishlistItem["currency"])} value={currency} name="currency">
-              <option value="USD">Ам.доллар ($)</option><option value="MNT">Төгрөг (₮)</option>
-            </select>
+            <FormSelect name="currency" label="Валют" options={CURRENCY_OPTIONS} value={currency}
+              onValueChange={(value) => setCurrency(value as WishlistItem["currency"])} />
           </label>
         </div>
         <label className="field-label">Бүтээгдэхүүний холбоос
-          <input className="field-input" defaultValue={item?.url} maxLength={2048} name="url" placeholder="https://" type="url" />
+          <input className="field-input" defaultValue={item?.url} maxLength={8192} name="url" placeholder="https://… / Taobao share link" type="text" inputMode="url" autoCapitalize="none" autoCorrect="off" onBlur={(event) => { try { event.currentTarget.value = normalizeProductUrl(event.currentTarget.value); } catch { /* Submit reports the validation error. */ } }} />
         </label>
         <label className="field-label">Ач холбогдол
-          <select className="field-input" defaultValue={item?.priority ?? "Medium"} name="priority"><option value="Low">Бага</option><option value="Medium">Дунд</option><option value="High">Өндөр</option></select>
+          <FormSelect name="priority" label="Ач холбогдол" options={PRIORITY_OPTIONS} defaultValue={item?.priority ?? "Rare"} />
         </label>
         <label className="field-label">Ангилал
           <input className="field-input" defaultValue={item?.category} maxLength={64} name="category" />
@@ -538,6 +576,7 @@ function ItemForm({
             type="file"
           />
           <Button disabled={images.length >= MAX_WISH_IMAGES} onClick={() => document.getElementById("wish-images")?.click()} variant="secondary">Зураг нэмэх</Button>
+          <p className="wish-media-hint">Зураг бүрийг өөрөө байрлуулж, 1:1 харьцаагаар тайрч батална.</p>
           {images.length > 0 && (
             <ol aria-label="Сонгосон зургууд" className="wish-media-list">
               {images.map((src, index) => (
@@ -705,24 +744,25 @@ function ItemDetail({
   pending?: boolean;
   error?: string;
 }) {
-  const reduceMotion = useReducedMotion();
+  const { settings } = useAppSettings();
+  const reduceMotion = useReducedMotion() || !settings.fluidAnimations;
   const price = item.price !== null ? formatWishPrice(item.price, item.currency) : "No price";
   const images = useMemo(() => getWishImages(item), [item]);
   return (
-    <SheetFrame close={close} sharedItemId={item.id} title={item.name} hideTitle>
+    <SheetFrame close={close} sharedItemId={sharedId ?? item.id} title={item.name} hideTitle>
       <div className="detail-content">
         {images.length > 0 && <WishGallery images={images} preview={preview} sharedId={sharedId} name={item.name} />}
         <motion.div
           className="detail-copy"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 5 }}
+          initial={{ opacity: reduceMotion ? 1 : 0, y: reduceMotion ? 0 : 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.2, delay: reduceMotion ? 0 : 0.16 }}
+          transition={{ duration: reduceMotion ? 0 : 0.22, delay: reduceMotion ? 0 : 0.12, ease: "easeOut" }}
         >
           <h3 className="text-xl font-semibold tracking-tight">{item.name}</h3>
           <p className="mt-1 text-sm text-[var(--muted)]">{price}</p>
           {item.description && <p className="detail-description">{item.description}</p>}
           <dl className="detail-rows">
-            <div><dt>Priority</dt><dd className="wish-priority" data-priority={item.priority}>{item.priority}</dd></div>
+            <div><dt>Priority</dt><dd className="wish-priority" data-priority={item.priority}>{priorityLabel[item.priority]}</dd></div>
             <div><dt>Wishlist</dt><dd>{item.owner === "you" ? "Mine" : "Partner"}</dd></div>
             
           </dl>
@@ -748,7 +788,7 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
   const sourceElement = useRef<HTMLElement | null>(null);
   const releaseSource = useCallback(() => {
     const source = sourceElement.current;
-    if (source) { delete source.dataset.detailExpanded; source.closest("button")?.focus({ preventScroll: true }); }
+    if (source) { delete source.dataset.detailExpanded; source.closest(".wish-tile")?.querySelector<HTMLButtonElement>(".wish-open-target")?.focus({ preventScroll: true }); }
     sourceElement.current = null;
   }, []);
   const [deleteError, setDeleteError] = useState("");
@@ -793,8 +833,8 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
   const addSheetOpen = sheet === "add";
   const loadingRoute = pathname !== "/" && pathname !== "/settings" && !hasLoaded && (loading || !!error);
   const contextValue = useMemo(
-    () => ({ items, loading, error, refresh, openAddItem, addSheetOpen, openItem }),
-    [items, loading, error, refresh, openAddItem, addSheetOpen, openItem],
+    () => ({ userId, items, loading, error, refresh, openAddItem, addSheetOpen, openItem }),
+    [userId, items, loading, error, refresh, openAddItem, addSheetOpen, openItem],
   );
   const actionsValue = useMemo(() => ({ openAddItem, openItem }), [openAddItem, openItem]);
 
@@ -803,7 +843,8 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
       <WorkspaceActionsContext.Provider value={actionsValue}>
       <LayoutGroup id="yourwishes-shared-elements">
         <div className="app-frame">
-          <header className="app-topbar">
+          <WorkspaceBackground />
+          <motion.header layoutRoot className="app-topbar">
             {pathname !== "/" ? (
               <MotionLink
                 aria-label="Back to Home"
@@ -815,11 +856,10 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
                 <Home aria-hidden="true" className="size-[19px]" />
               </MotionLink>
             ) : <span aria-hidden="true" />}
-            <ProfileControl
-              editNickname={openNicknameEditor}
-              changePhoto={openPhotoEditor}
-            />
-          </header>
+            <LayoutGroup id="profile-controls" inherit={false}>
+              <ProfileControl editNickname={openNicknameEditor} changePhoto={openPhotoEditor} />
+            </LayoutGroup>
+          </motion.header>
           <main className={`page-content ${pathname === "/" ? "home-content" : ""}`}>
             {warning && <p className="text-sm text-[var(--muted)]" role="status">{warning}</p>}
             {hasLoaded && error && (
@@ -841,7 +881,7 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
               >
                 {loadingRoute && (
                   <section aria-live="polite" className="py-10 text-sm text-[var(--muted)]">
-                    {loading ? <p role="status">Loading wishes…</p> : <><p role="alert">{error}</p><Button className="mt-4" onClick={() => void refresh()} variant="secondary">Retry</Button></>}
+                    {!loading && <><p role="alert">{error}</p><Button className="mt-4" onClick={() => void refresh()} variant="secondary">Retry</Button></>}
                   </section>
                 )}
                 {/* Keep the router segment mounted during client data loading.

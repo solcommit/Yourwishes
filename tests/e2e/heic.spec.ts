@@ -32,9 +32,7 @@ test("real HEIC, container rotation, EXIF rotation and metadata removal", async 
     expect(output.metadata?.Orientation).toBeUndefined();
     expect(output.progress.join(" ")).toContain("Converting HEIC/HEIF");
   }
-  expect(result[0].width).toBe(1280);
-  expect(result[0].height).toBe(854);
-  for (const output of result.slice(1)) { expect(output.width).toBe(854); expect(output.height).toBe(1280); }
+  for (const output of result) { expect(output.width).toBe(854); expect(output.height).toBe(854); }
   expect(result[2].sourceOrientation).toBe(6);
   expect(result[2].sourceMetadata.GPSLatitude).toEqual([30, 0, 0]);
 });
@@ -88,7 +86,7 @@ test("invalid files, size bounds, batch limits, cancellation and retry", async (
   expect(result.names).toEqual(["photo.jpg", "second.jpg"]);
 });
 
-test("oversized raster output is resized proportionally and validated", async ({ page }) => {
+test("oversized raster output is center-cropped to square, bounded and validated", async ({ page }) => {
   const result = await page.evaluate(async () => {
     const { prepareWishImage } = await import(String("/prepare-wish-image.ts"));
     const canvas = document.createElement("canvas"); canvas.width = 4000; canvas.height = 3000;
@@ -109,7 +107,7 @@ test("oversized raster output is resized proportionally and validated", async ({
   expect(result.input).toBeGreaterThan(5 * 1024 * 1024);
   expect(result.output).toBeLessThanOrEqual(5 * 1024 * 1024);
   expect(result.width).toBeLessThanOrEqual(3072);
-  expect(result.width / result.height).toBeCloseTo(4 / 3, 2);
+  expect(result.width).toBe(result.height);
 });
 
 test("five HEIC conversions leave main-thread button interactions available", async ({ page }, info) => {
@@ -132,4 +130,44 @@ test("five HEIC conversions leave main-thread button interactions available", as
   const result = await page.evaluate(() => (window as Window & { processingAudit?: { longTasks: number[] } }).processingAudit);
   await info.attach("heic-responsiveness", { body: JSON.stringify({ clickMs, ...result }), contentType: "application/json" });
   console.log(JSON.stringify({ measurement: "five-photo-heic", project: info.project.name, clickMs, ...result }));
+});
+
+
+test("manual crop sources preserve HEIC framing and selected pixels export as square", async ({ page }) => {
+  const result = await page.evaluate(async () => {
+    const { prepareWishImage, cropWishImage } = await import(String("/prepare-wish-image.ts"));
+    const heic = await (await fetch("/fixture.heic")).blob();
+    const prepared = await prepareWishImage(new File([heic], "fixture.heic"), () => {}, undefined, false);
+    const source = await createImageBitmap(prepared);
+    const original = {width:source.width,height:source.height};source.close();
+    const canvas = document.createElement("canvas");canvas.width=900;canvas.height=300;
+    const ctx=canvas.getContext("2d")!;
+    for (const [index,color] of ["red","lime","blue"].entries()) {ctx.fillStyle=color;ctx.fillRect(index*300,0,300,300);}
+    const blob=await new Promise<Blob>(resolve=>canvas.toBlob(value=>resolve(value!),"image/png"));
+    const uncropped=await prepareWishImage(new File([blob],"wide.png"),()=>{},undefined,false);
+    const cropped=await cropWishImage(uncropped,{x:600,y:0,width:300,height:300});
+    const bitmap=await createImageBitmap(cropped);canvas.width=bitmap.width;canvas.height=bitmap.height;ctx.drawImage(bitmap,0,0);
+    const output={width:bitmap.width,height:bitmap.height,rgb:[...ctx.getImageData(150,150,1,1).data]};bitmap.close();
+    let invalid=false;try{await cropWishImage(uncropped,{x:800,y:0,width:300,height:300});}catch{invalid=true;}
+    return {original,output,invalid};
+  });
+  expect(result.original).toEqual({width:1280,height:854});
+  expect(result.output.width).toBe(300);expect(result.output.height).toBe(300);
+  expect(result.output.rgb).toEqual([0,0,255,255]);expect(result.invalid).toBe(true);
+});
+
+test("manual batch waits for confirmation and abort rejects later adoption", async ({ page }) => {
+  const result=await page.evaluate(async()=>{
+    const {prepareWishImages}=await import(String("/prepare-wish-image.ts"));
+    const canvas=document.createElement("canvas");canvas.width=600;canvas.height=300;
+    const blob=await new Promise<Blob>(resolve=>canvas.toBlob(value=>resolve(value!),"image/png"));
+    const files=[new File([blob],"one.png"),new File([blob],"two.png")];
+    let calls=0;let aborted=false;const controller=new AbortController();
+    try{await prepareWishImages(files,0,()=>{},controller.signal,async(file: File,index: number,total: number)=>{
+      calls++;if(index!==1||total!==2)throw Error("Incorrect batch order");
+      controller.abort();return file;
+    });}catch(error){aborted=error instanceof DOMException&&error.name==="AbortError";}
+    return {calls,aborted};
+  });
+  expect(result).toEqual({calls:1,aborted:true});
 });

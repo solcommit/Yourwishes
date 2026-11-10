@@ -13,5 +13,5 @@ async function SignInContent() {
 }
 
 export default function SignInPage() {
-  return <Suspense fallback={<div role="status" className="p-8 text-[var(--muted)]">Loading…</div>}><SignInContent /></Suspense>;
+  return <Suspense fallback={null}><SignInContent /></Suspense>;
 }

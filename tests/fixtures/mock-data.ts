@@ -7,7 +7,7 @@ export type WishlistItem = {
   price: number;
   currency: WishCurrency;
   url: string;
-  priority: "Low" | "Medium" | "High";
+  priority: "Common" | "Rare" | "Legendary";
   mediaName: string;
   image: string;
   images?: string[];
@@ -24,7 +24,7 @@ export const INITIAL_ITEMS: WishlistItem[] = [
     price: 38,
     currency: "USD",
     url: "",
-    priority: "Medium",
+    priority: "Rare",
     mediaName: "",
     image: "",
     owner: "you",
@@ -37,7 +37,7 @@ export const INITIAL_ITEMS: WishlistItem[] = [
     price: 24,
     currency: "USD",
     url: "",
-    priority: "Low",
+    priority: "Common",
     mediaName: "",
     image: "",
     owner: "you",
@@ -50,7 +50,7 @@ export const INITIAL_ITEMS: WishlistItem[] = [
     price: 119,
     currency: "USD",
     url: "",
-    priority: "High",
+    priority: "Legendary",
     mediaName: "",
     image: "",
     owner: "you",
@@ -63,7 +63,7 @@ export const INITIAL_ITEMS: WishlistItem[] = [
     price: 180,
     currency: "USD",
     url: "",
-    priority: "Medium",
+    priority: "Rare",
     mediaName: "",
     image: "",
     owner: "partner",
@@ -76,7 +76,7 @@ export const INITIAL_ITEMS: WishlistItem[] = [
     price: 52,
     currency: "USD",
     url: "",
-    priority: "Low",
+    priority: "Common",
     mediaName: "",
     image: "",
     owner: "partner",

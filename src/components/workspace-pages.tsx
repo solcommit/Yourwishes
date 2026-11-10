@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { memo, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
@@ -25,7 +24,11 @@ import { Button, IconButton } from "@/components/ui/button";
 import type { WishlistItem } from "@/lib/wishlist/types";
 import { formatWishPrice } from "@/lib/format-price";
 import { getWishImages } from "@/lib/wish-media";
-import { wishThumbnailLoader } from "@/lib/wishlist/thumbnail-loader";
+import { PrivateWishPhoto } from "./private-wish-photo";
+import { PriorityFolders } from "./priority/priority-folders";
+import { WishBatch } from "./wish-batch";
+import { ColourfulText } from "./ui/colourful-text";
+import { wishLayoutTransition } from "@/lib/wish-transition";
 
 function PageTitle({ children }: { children: ReactNode }) {
   return <h1 className="page-title">{children}</h1>;
@@ -34,48 +37,41 @@ function PageTitle({ children }: { children: ReactNode }) {
 const WishTile = memo(function WishTile({ item, list = false }: { item: WishlistItem; list?: boolean }) {
   const { openItem } = useWorkspaceActions();
   const imageRef = useRef<HTMLImageElement>(null);
-  const reduceMotion = useReducedMotion();
+  const { settings } = useAppSettings();
+  const reduceMotion = useReducedMotion() || !settings.fluidAnimations;
   const sourceId = useId();
   const price = item.price !== null ? formatWishPrice(item.price, item.currency) : null;
   const thumbnail = getWishImages(item)[0];
   return (
-    <motion.button
-      aria-label={`${item.name}${price ? `, ${price}` : ""}. View details`}
+    <div className={`wish-tile-wrapper ${list ? "wish-tile-wrapper-list" : ""}`}>
+    <motion.div
       className={`wish-tile ${list ? "wish-tile-list" : ""}`}
-      onClick={() => openItem(item, imageRef.current?.currentSrc, sourceId)}
-      type="button"
-      whileTap={reduceMotion ? undefined : { scale: 0.985 }}
+      layoutId={reduceMotion ? undefined : `${sourceId}-card`}
+      data-wish-card={sourceId}
+      style={{ borderRadius: list ? 12 : 14 }}
       whileHover={reduceMotion ? undefined : { y: -2 }}
-      transition={{ type: "spring", stiffness: 360, damping: 34, mass: 0.8 }}
+      transition={{ layout: reduceMotion ? { duration: 0 } : wishLayoutTransition, default: { type: "spring", stiffness: 360, damping: 34, mass: 0.8 } }}
     >
+      <button type="button" className="wish-open-target"
+        aria-label={`${item.name}${price ? `, ${price}` : ""}. View details`}
+        onClick={() => openItem(item, imageRef.current?.currentSrc, sourceId)} />
       <motion.span
         className="wish-shared-image"
         id={sourceId}
-        layoutId={sourceId}
-        animate={{ borderRadius: list ? "10px" : "12px" }}
-        transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 32 }}
+        layoutId={reduceMotion ? undefined : sourceId}
+        style={{ borderRadius: list ? 10 : 14 }}
+        transition={reduceMotion ? { duration: 0 } : wishLayoutTransition}
       >
         {thumbnail ? (
-          <Image
-            alt=""
-            className="wish-image"
-            height={560}
-            ref={imageRef}
-            loading="lazy"
-            loader={wishThumbnailLoader}
-            sizes={list ? "86px" : "(max-width: 699px) 130px, 180px"}
-            src={thumbnail}
-            onError={(event) => { event.currentTarget.style.visibility = "hidden"; }}
-            onLoad={(event) => { event.currentTarget.style.visibility = "visible"; }}
-            width={720}
-          />
+          <PrivateWishPhoto key={`${thumbnail}-${list}`} src={thumbnail} name={item.name} list={list} imageRef={imageRef} />
         ) : <span aria-hidden="true" className="wish-image wish-image-empty" />}
       </motion.span>
       <span className="wish-meta">
         <span className="wish-name">{item.name}</span>
         {price && <span className="wish-price">{price}</span>}
       </span>
-    </motion.button>
+    </motion.div>
+    </div>
   );
 });
 
@@ -83,6 +79,7 @@ export function Dashboard() {
   const { addSheetOpen, openAddItem } = useWorkspace();
   return (
     <div className="home-screen">
+      {!addSheetOpen && <h1 className="home-wordmark"><ColourfulText text="yourwishes." /></h1>}
       {!addSheetOpen && (
         <motion.button
           aria-label="Add wish"
@@ -106,9 +103,11 @@ export function Dashboard() {
 }
 
 export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
+  const { openItem } = useWorkspaceActions();
   const { items } = useWorkspace();
   const { settings } = useAppSettings();
   const [layoutOverride, setLayoutOverride] = useState<"grid" | "list" | null>(null);
+  const [sortOpen, setSortOpen] = useState(false);
   const layout = layoutOverride ?? settings.defaultLayout;
   const isMine = owner === "you";
   const wishes = items.filter((item) => item.owner === owner);
@@ -119,19 +118,26 @@ export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
         <PageTitle>{isMine ? "Mine" : "Partner"}</PageTitle>
         <div className="toolbar-actions">
           <div aria-label="Wishlist layout" className="layout-picker" role="group">
-            <IconButton aria-pressed={layout === "grid"} className={layout === "grid" ? "selected" : ""} label="Grid layout" onClick={() => setLayoutOverride("grid")} variant="quiet">
+            <IconButton aria-pressed={!sortOpen && layout === "grid"} className={!sortOpen && layout === "grid" ? "selected" : ""} label="Grid layout" onClick={() => { setLayoutOverride("grid"); setSortOpen(false); }} variant="quiet">
               <Grid2X2 aria-hidden="true" className="size-[17px]" />
             </IconButton>
-            <IconButton aria-pressed={layout === "list"} className={layout === "list" ? "selected" : ""} label="List layout" onClick={() => setLayoutOverride("list")} variant="quiet">
+            <IconButton aria-pressed={!sortOpen && layout === "list"} className={!sortOpen && layout === "list" ? "selected" : ""} label="List layout" onClick={() => { setLayoutOverride("list"); setSortOpen(false); }} variant="quiet">
               <List aria-hidden="true" className="size-[17px]" />
             </IconButton>
           </div>
+          {!isMine && <Button aria-pressed={sortOpen} className="priority-sort-toggle" onClick={() => setSortOpen(open => !open)} variant={sortOpen ? "primary" : "secondary"}>Sort</Button>}
         </div>
       </div>
-      {wishes.length ? (
-        <div className={layout === "grid" ? "wishlist-grid" : "wishlist-list"}>
-          {wishes.map((item) => <WishTile item={item} key={item.id} list={layout === "list"} />)}
-        </div>
+      {!isMine && sortOpen ? (
+        <PriorityFolders key={owner} items={wishes} onOpenItem={item => openItem(item)} render={filtered => (
+          <WishBatch key={`${owner}:priority:${filtered.map(item => `${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")}`} className="wishlist-grid">
+            {filtered.map(item => <WishTile key={item.id} item={item} />)}
+          </WishBatch>
+        )} />
+      ) : wishes.length ? (
+        <WishBatch key={`${owner}:${layout}:${wishes.map(item => `${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")}`} className={layout === "grid" ? "wishlist-grid" : "wishlist-list"}>
+          {wishes.map(item => <WishTile key={item.id} item={item} list={layout === "list"} />)}
+        </WishBatch>
       ) : (
         null
       )}
@@ -584,9 +590,9 @@ export function SurprisesPage() {
         <Link className="text-link" href="/partner"><ArrowLeft className="size-4" /> Partner list</Link>
       </div>
       {partner.length ? (
-        <div className="wishlist-grid">
+        <WishBatch key={partner.map(item => `${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")} className="wishlist-grid">
           {partner.map((item) => <WishTile item={item} key={item.id} />)}
-        </div>
+        </WishBatch>
       ) : null}
     </div>
   );

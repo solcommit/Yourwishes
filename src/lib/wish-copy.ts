@@ -1,5 +1,5 @@
 // Presentation only: persisted priorities and API validation contracts stay English.
-export const priorityLabel = { Low: "Бага", Medium: "Дунд", High: "Өндөр" } as const;
+export const priorityLabel = { Common: "Байвал гоё", Uncommon: "Авмаар байна", Rare: "Хэрэгтэй", Epic: "Маш хэрэгтэй", Legendary: "Нэн шаардлагатай" } as const;
 
 export function wishUiError(error: unknown, action: "save" | "photo" | "delete" = "save"): string {
   const message = error instanceof Error ? error.message : "";

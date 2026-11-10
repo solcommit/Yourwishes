@@ -10,7 +10,7 @@ const session = { access_token: token, token_type: "bearer", refresh_token: "loc
 const rows = Array.from({ length: 24 }, (_, i) => {
   const id = `cccccccc-cccc-4ccc-8ccc-${String(i + 1).padStart(12, "0")}`;
   const photoId = `dddddddd-dddd-4ddd-8ddd-${String(i + 1).padStart(12, "0")}`;
-  return { id, owner_id: i < 12 ? userId : partnerId, title: `Audit wish ${i + 1}`, description: "Synthetic performance fixture, never saved to Supabase.", price: 25 + i, currency: "USD", product_url: null, priority: "Medium", category: "", created_at: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z", wishlist_images: [{ id: photoId, storage_path: `${userId}/${id}/photo.jpg`, sort_order: 0, original_name: "fixture.jpg" }] };
+  return { id, owner_id: i < 12 ? userId : partnerId, title: `Audit wish ${i + 1}`, description: "Synthetic performance fixture, never saved to Supabase.", price: 25 + i, currency: "USD", product_url: null, priority: "Rare", category: "", created_at: "2026-01-01T00:00:00Z", updated_at: "2026-01-01T00:00:00Z", wishlist_images: [{ id: photoId, storage_path: `${userId}/${id}/photo.jpg`, sort_order: 0, original_name: "fixture.jpg" }] };
 });
 const pixels = Buffer.alloc(1200 * 800 * 3);
 let seed = 123;
@@ -55,6 +55,15 @@ const server = createServer(async (request, response) => {
     const id = url.searchParams.get("id")?.replace(/^eq\./, "");
     const photo = rows.flatMap((row) => row.wishlist_images).find((entry) => entry.id === id);
     response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(photo ? { storage_path: photo.storage_path } : null)); return;
+  }
+  if (url.pathname === "/rest/v1/rpc/authorized_wish_photo") {
+    let body = ""; for await (const chunk of request) body += chunk;
+    const id = JSON.parse(body).p_id;
+    const photo = rows.flatMap(row => row.wishlist_images).find(entry => entry.id === id);
+    response.setHeader("Content-Type", "application/json"); response.end(JSON.stringify(photo ? [photo] : [])); return;
+  }
+  if (url.pathname.startsWith("/storage/v1/object/authenticated/wishlist-thumbnails/")) {
+    response.writeHead(404, { "Content-Type": "application/json" }); response.end('{"message":"not found"}'); return;
   }
   if (url.pathname.startsWith("/rest/v1/rpc/")) { response.setHeader("Content-Type", "application/json"); response.end("[]"); return; }
   if (url.pathname.startsWith("/storage/v1/object/")) { response.setHeader("Content-Type", "image/jpeg"); response.end(url.pathname.endsWith("gallery-portrait.jpg") ? portrait : url.pathname.endsWith("gallery-wide.jpg") ? wide : image); return; }

@@ -2,10 +2,10 @@ import { heifInfo } from "./heif-container";
 import { encodePhoto } from "./heic-render";
 import { MAX_SOURCE_BYTES, checkDimensions } from "./image-format";
 
-self.onmessage = async (event: MessageEvent<{ file: File }>) => {
+self.onmessage = async (event: MessageEvent<{ file: File; square?: boolean }>) => {
   let bitmap: ImageBitmap | undefined;
   try {
-    const { file } = event.data;
+    const { file, square = true } = event.data;
     if (!file.size || file.size > MAX_SOURCE_BYTES) throw new Error("Choose a HEIC photo up to 32 MiB.");
     const info = heifInfo(new Uint8Array(await file.arrayBuffer()));
     if (!info) throw new Error("This is not a valid HEIC/HEIF photo.");
@@ -19,7 +19,7 @@ self.onmessage = async (event: MessageEvent<{ file: File }>) => {
     }
     bitmap = await heicTo({ blob: file, type: "bitmap" });
     checkDimensions(bitmap);
-    const blob = await encodePhoto(bitmap, bitmap.width, bitmap.height, orientation);
+    const blob = await encodePhoto(bitmap, bitmap.width, bitmap.height, orientation, "image/jpeg", square);
     self.postMessage({ blob });
   } catch {
     self.postMessage({ error: "This HEIC/HEIF photo could not be converted. Try selecting it again, or export a JPEG from Photos." });

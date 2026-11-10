@@ -1,0 +1,13 @@
+:root { --wordmark-0: #2667c9; --wordmark-1: #9952bd; --wordmark-2: #c54c80; --wordmark-3: #bc6b24; --wordmark-4: #21856c; }
+:root.dark { --wordmark-0: #80b8ff; --wordmark-1: #c69aff; --wordmark-2: #ff97c2; --wordmark-3: #ffd18c; --wordmark-4: #7de1c4; }
+.colourful-text { display: inline-block; white-space: nowrap; }
+.colourful-letter { display: inline-block; color: var(--letter-color); animation: colourful-letter 7s ease-in-out infinite; animation-delay: calc(var(--letter-index) * -0.34s); }
+@keyframes colourful-letter {
+  0%, 100% { color: var(--letter-color); transform: translateY(0) scale(1); filter: blur(0); }
+  35% { color: var(--wordmark-1); transform: translateY(-2px) scale(1.035); filter: blur(.2px); }
+  65% { color: var(--wordmark-4); transform: translateY(1px) scale(.985); filter: blur(0); }
+}
+.home-wordmark { position: absolute; inset-inline: 0; top: calc(50% - clamp(38px, 7.5vw, 47px) - 26px); transform: translateY(-100%); margin: 0; text-align: center; font-size: clamp(34px, 7vw, 58px); font-weight: 780; line-height: 1.2; letter-spacing: -.065em; pointer-events: none; }
+.home-screen { position: relative; }
+:root[data-fluid-animations="false"] .colourful-letter { animation: none; }
+@media (prefers-reduced-motion: reduce) { .colourful-letter { animation: none; } }

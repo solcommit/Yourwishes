@@ -90,9 +90,9 @@ test("persistent CRUD, private images, reciprocal ownership, synchronization and
       expect((await outsider.storage.from("wishlist-images").download(own.photos[0].path)).error).not.toBeNull();
       await outsider.auth.signOut({ scope: "local" });
     } else testInfo.annotations.push({ type: "unverified", description: "Third-account RLS checks require explicit nonmember credentials." });
-    const badSave = await partner.request.post("/api/wishlist", { headers: { Origin: baseURL! }, data: { id: own.id, name: "Forbidden", description: "", price: 1, currency: "USD", url: "", priority: "Low", category: "", photos: own.photos, expectedUpdatedAt: own.updatedAt } });
+    const badSave = await partner.request.post("/api/wishlist", { headers: { Origin: baseURL! }, data: { id: own.id, name: "Forbidden", description: "", price: 1, currency: "USD", url: "", priority: "Common", category: "", photos: own.photos, expectedUpdatedAt: own.updatedAt } });
     expect(badSave.ok()).toBe(false);
-    const extraImages = await raw[0].rpc("save_wish", { p_id: own.id, p_title: own.name, p_description: "", p_price: 1, p_currency: "USD", p_product_url: null, p_priority: "Low", p_category: null, p_images: Array.from({ length: 6 }, () => own.photos[0]), p_expected_updated_at: own.updatedAt });
+    const extraImages = await raw[0].rpc("save_wish", { p_id: own.id, p_title: own.name, p_description: "", p_price: 1, p_currency: "USD", p_product_url: null, p_priority: "Common", p_category: null, p_images: Array.from({ length: 6 }, () => own.photos[0]), p_expected_updated_at: own.updatedAt });
     expect(extraImages.error).not.toBeNull();
     await partner.getByRole("button", { name: "Хаах", exact: true }).click();
     await page.getByRole("button", { name: new RegExp(`${prefix}-A`) }).click();

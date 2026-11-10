@@ -1,5 +1,7 @@
 import "server-only";
 import { after } from "next/server";
+import { normalizeWishPriority } from "../wish-priority";
+import { derivativePath, THUMBNAIL_BUCKET, THUMBNAIL_WIDTHS } from "./derivatives";
 import { createClient } from "@/lib/supabase/server";
 import { getMember } from "@/lib/auth";
 import { WISH_BUCKET, type WishlistItem } from "./types";
@@ -57,7 +59,7 @@ export async function fetchWishes(supabase: Awaited<ReturnType<typeof createClie
     return {
       id: row.id, name: row.title, description: row.description,
       price: row.price === null ? null : Number(row.price), currency: row.currency,
-      url: row.product_url ?? "", priority: row.priority, category: row.category ?? "",
+      url: row.product_url ?? "", priority: normalizeWishPriority(row.priority), category: row.category ?? "",
       createdAt: row.created_at, updatedAt: row.updated_at, ownerId: row.owner_id,
       owner: row.owner_id === userId ? "you" : "partner",
       images, image: images[0] ?? "", mediaNames: photos.map((photo) => photo.original_name),
@@ -71,6 +73,10 @@ export async function cleanupImages(supabase: Awaited<ReturnType<typeof createCl
   if (claimError) return false;
   if (!claimed?.length) return true;
   const paths = claimed.map((job: { storage_path: string }) => job.storage_path);
+  const variants = paths.flatMap((path: string) => THUMBNAIL_WIDTHS.map((width) => derivativePath(path, width)));
+  const { error: variantError } = await supabase.storage.from(THUMBNAIL_BUCKET).remove(variants);
+  // Missing bucket is expected before migration; other errors retain cleanup jobs.
+  if (variantError && !/bucket.*not found/i.test(variantError.message)) return false;
   const { error: removeError } = await supabase.storage.from(WISH_BUCKET).remove(paths);
   if (removeError) return false;
   const { error: ackError } = await supabase.from("wishlist_image_cleanup").delete().eq("owner_id", userId).in("storage_path", paths);

@@ -8,5 +8,5 @@ async function PrivateWorkspace({ children }: { children: ReactNode }) {
 }
 
 export default function WorkspaceLayout({ children }: { children: ReactNode }) {
-  return <Suspense fallback={<div role="status" className="p-8 text-[var(--muted)]">Loading…</div>}><PrivateWorkspace>{children}</PrivateWorkspace></Suspense>;
+  return <Suspense fallback={null}><PrivateWorkspace>{children}</PrivateWorkspace></Suspense>;
 }

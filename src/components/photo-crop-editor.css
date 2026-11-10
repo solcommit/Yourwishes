@@ -1,0 +1,6 @@
+.photo-crop-editor { display: grid; gap: 14px; padding-top: 14px; }
+.photo-crop-stage { position: relative; height: min(48dvh, 370px); min-height: 180px; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: #111; }
+.photo-crop-editor input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--system-blue); cursor: pointer; }
+.photo-crop-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; padding-block: 8px; }
+.sheet-form[hidden] { display: none; }
+@media (max-width: 399px) { .photo-crop-actions .app-button { flex: 1 1 100px; } }

@@ -15,6 +15,7 @@ import { MotionConfig, useReducedMotion } from "motion/react";
 import { useTheme } from "next-themes";
 
 export const BACKGROUND_PRESETS = [
+  { value: "light-rays", label: "Light Rays", colors: ["#92b9ff", "#b4a3e7", "#6384cf"] },
   { value: "dark-aurora", label: "Dark Aurora", colors: ["#6f36ff", "#00c9b0", "#2459db"] },
   { value: "sunset-glow", label: "Sunset Glow", colors: ["#ff6a3d", "#ffb451", "#ff866f"] },
   { value: "pink-cloud", label: "Pink Cloud", colors: ["#ff3f9b", "#f58bb4", "#ffc3d5"] },
@@ -46,7 +47,7 @@ export type AppSettings = {
 const defaults: AppSettings = {
   appearance: "system",
   nickname: "You",
-  backgroundStyle: "dark-aurora",
+  backgroundStyle: "light-rays",
   gradientIntensity: "subtle",
   ambientAnimation: true,
   defaultLayout: "grid",
