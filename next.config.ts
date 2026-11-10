@@ -12,7 +12,13 @@ const nextConfig: NextConfig = {
   // Keep isolated fixture-backed audit builds separate from normal dev output.
   distDir: process.env.YOURWISHES_AUDIT_DIST_DIR || ".next",
   allowedDevOrigins: lanHosts,
-  /* config options here */
+  async headers(){return [{source:"/sw.js",headers:[
+    {key:"Content-Type",value:"application/javascript; charset=utf-8"},
+    {key:"Cache-Control",value:"no-cache, no-store, must-revalidate"},
+    {key:"Service-Worker-Allowed",value:"/"},
+    {key:"X-Content-Type-Options",value:"nosniff"},
+    {key:"Content-Security-Policy",value:"default-src 'self'; script-src 'self'"},
+  ]}];},
   cacheComponents: true,
   partialPrefetching: true,
   turbopack: {

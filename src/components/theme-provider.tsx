@@ -2,6 +2,7 @@
 
 import { ThemeProvider as NextThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
+import { PwaRegistration } from "./pwa-registration";
 import { BrowserInteractions } from "./browser-interactions";
 import { Toaster } from "./ui/sonner";
 import { SettingsProvider } from "@/components/settings-provider";
@@ -14,7 +15,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <SettingsProvider><BrowserInteractions />{children}<Toaster /></SettingsProvider>
+      <SettingsProvider><PwaRegistration /><BrowserInteractions />{children}<Toaster /></SettingsProvider>
     </NextThemeProvider>
   );
 }
