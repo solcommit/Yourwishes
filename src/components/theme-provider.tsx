@@ -2,6 +2,7 @@
 
 import { ThemeProvider as NextThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
+import { BrowserInteractions } from "./browser-interactions";
 import { Toaster } from "./ui/sonner";
 import { SettingsProvider } from "@/components/settings-provider";
 
@@ -13,7 +14,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <SettingsProvider>{children}<Toaster /></SettingsProvider>
+      <SettingsProvider><BrowserInteractions />{children}<Toaster /></SettingsProvider>
     </NextThemeProvider>
   );
 }

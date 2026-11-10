@@ -7,8 +7,8 @@ let url: string;
 test.beforeAll(async()=>{
   const output=await build({stdin:{contents:`
     import React from 'react';import {createRoot} from 'react-dom/client';
-    import {WishlistPage} from './src/components/workspace-pages';
-    createRoot(document.getElementById('root')).render(<WishlistPage owner={location.search.includes('mine')?'you':'partner'}/>);
+    import {WishlistPage} from './src/components/workspace-pages';import {BrowserInteractions} from './src/components/browser-interactions';
+    createRoot(document.getElementById('root')).render(<><BrowserInteractions/><WishlistPage owner={location.search.includes('mine')?'you':'partner'}/></>);
   `,loader:'tsx',resolveDir:process.cwd()},bundle:true,write:false,platform:'browser',format:'esm',loader:{'.css':'empty'},define:{'process.env.NODE_ENV':'"production"'},plugins:[{name:'isolated-workspace',setup(builder){
     builder.onResolve({filter:/settings-provider$/},()=>({path:'settings',namespace:'fixture'}));
     builder.onResolve({filter:/profile-photo-provider$/},()=>({path:'profile',namespace:'fixture'}));
@@ -19,7 +19,7 @@ test.beforeAll(async()=>{
       export const useWorkspace=()=>({items}); export const useWorkspaceActions=()=>({openItem:item=>{window.opened=item.name;}});
     `:args.path==='next/image'?`import React from 'react';export default function Image({unoptimized,...props}){return <img {...props}/>}`:`import React from 'react';export default function Link({href,children,...props}){return <a href={href} {...props}>{children}</a>}` }));
   }}]});
-  const css=readFileSync('src/app/globals.css','utf8').replace(/^@import.*$/gm,'')+['Folder.css','priority-folders.css'].map(file=>readFileSync('src/components/priority/'+file,'utf8')).join('\n')+readFileSync('src/components/wish-batch.css','utf8')+'body{margin:18px}.desktop-page-heading{display:flex}.priority-browser{width:100%}';
+  const css=(readFileSync('src/components/browser-interactions.css','utf8')+readFileSync('src/app/globals.css','utf8')).replace(/^@import.*$/gm,'')+['Folder.css','priority-folders.css'].map(file=>readFileSync('src/components/priority/'+file,'utf8')).join('\n')+readFileSync('src/components/wish-batch.css','utf8')+'body{margin:18px}.desktop-page-heading{display:flex}.priority-browser{width:100%}';
   server=createServer((req,res)=>{if(req.url==='/app.js'){res.setHeader('Content-Type','text/javascript');res.end(output.outputFiles[0].contents);}else{res.setHeader('Content-Type','text/html');res.end('<meta name="viewport" content="width=device-width, initial-scale=1"><style>'+css+'</style><div id="root"></div><script type="module" src="/app.js"></script>');}});
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));const address=server.address();if(!address||typeof address==='string')throw Error('No harness');url=`http://127.0.0.1:${address.port}`;
 });
