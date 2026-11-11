@@ -6,3 +6,9 @@
 
 .wish-batch[data-flight="true"][data-ready="true"] { animation:none; }
 .wish-batch[data-arriving="true"] { position:relative; z-index:5; }
+
+.wish-batch-stage { position:relative; min-width:0; }
+.wish-batch-loading { position:absolute; top:0; left:0; right:0; }
+
+.wish-pages { display:grid; gap:24px; min-width:0; }
+.wish-load-more { justify-self:center; }

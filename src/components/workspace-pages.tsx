@@ -5,20 +5,16 @@ import { memo, useEffect, useId, useRef, useState, type CSSProperties, type Reac
 import {
   ArrowLeft,
   ChevronLeft,
-  ChevronRight,
-  Compass,
-  Gift,
   Grid2X2,
   List,
   Moon,
+  SlidersHorizontal,
+  Palette,
   Plus,
-  Settings2,
-  Sparkles,
   Sun,
-  Zap,
 } from "lucide-react";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "motion/react";
-import { BACKGROUND_PRESETS, useAppSettings, type AppSettings, type BackgroundStyle } from "@/components/settings-provider";
+import { useAppSettings, type AppSettings } from "@/components/settings-provider";
 import { useWorkspace, useWorkspaceActions } from "@/components/app-shell";
 import { Button, IconButton } from "@/components/ui/button";
 import type { WishlistItem } from "@/lib/wishlist/types";
@@ -29,6 +25,9 @@ import { useProfilePhoto } from "./profile-photo-provider";
 import { PriorityFolders } from "./priority/priority-folders";
 import { WishBatch } from "./wish-batch";
 import { ColourfulText } from "./ui/colourful-text";
+import "./settings-page.css";
+import { DISCOVER_METHODS } from "@/lib/discover-icons";
+import { DiscoverAction } from "./discover-action";
 import { wishLayoutTransition } from "@/lib/wish-transition";
 
 function PageTitle({ children }: { children: ReactNode }) {
@@ -103,6 +102,18 @@ export function Dashboard() {
   );
 }
 
+/** Bound initial private downloads; later pages keep the already visible cards mounted. */
+function WishPages({items,list=false,identity}:{items:WishlistItem[];list?:boolean;identity:string}) {
+  const [pages,setPages]=useState(1);
+  const pageSize=24;
+  return <div className="wish-pages">{Array.from({length:Math.min(pages,Math.ceil(items.length/pageSize))},(_,page)=>{
+    const batch=items.slice(page*pageSize,(page+1)*pageSize);
+    return <WishBatch key={`${identity}:${page}:${batch.map(item=>`${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")}`} className={list ? "wishlist-list" : "wishlist-grid"}>
+      {batch.map(item=><WishTile key={item.id} item={item} list={list} />)}
+    </WishBatch>;
+  })}{items.length>pages*pageSize && <Button className="wish-load-more" variant="secondary" onClick={()=>setPages(value=>value+1)}>Show more wishes</Button>}</div>;
+}
+
 export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
   const {partner}=useProfilePhoto();
   const { openItem } = useWorkspaceActions();
@@ -132,14 +143,10 @@ export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
       </div>
       {!isMine && sortOpen ? (
         <PriorityFolders key={owner} items={wishes} onOpenItem={item => openItem(item)} render={filtered => (
-          <WishBatch key={`${owner}:priority:${filtered.map(item => `${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")}`} className="wishlist-grid">
-            {filtered.map(item => <WishTile key={item.id} item={item} />)}
-          </WishBatch>
+          <WishPages key={`${owner}:priority`} identity={`${owner}:priority`} items={filtered} />
         )} />
       ) : wishes.length ? (
-        <WishBatch key={`${owner}:${layout}:${wishes.map(item => `${item.id}:${getWishImages(item)[0] ?? ""}`).join("|")}`} className={layout === "grid" ? "wishlist-grid" : "wishlist-list"}>
-          {wishes.map(item => <WishTile key={item.id} item={item} list={layout === "list"} />)}
-        </WishBatch>
+        <WishPages key={`${owner}:${layout}`} identity={`${owner}:${layout}`} items={wishes} list={layout === "list"} />
       ) : (
         null
       )}
@@ -149,9 +156,9 @@ export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
 
 export function DiscoverPage() {
   const { items } = useWorkspace();
-  const { settings, triggerCelebration } = useAppSettings();
+  const { settings } = useAppSettings();
   const partnerWishes = items.filter((item) => item.owner === "partner");
-  const [screen, setScreen] = useState<"landing" | "select" | "wheel" | "instant">("landing");
+  const [screen, setScreen] = useState<"select" | "wheel" | "instant">("select");
   const [instantResult, setInstantResult] = useState<WishlistItem | null>(null);
   const [instantRevealId, setInstantRevealId] = useState(0);
   const [confettiVisible, setConfettiVisible] = useState(false);
@@ -189,7 +196,7 @@ export function DiscoverPage() {
     setInstantResult(partnerWishes[randomIndex(partnerWishes.length)]);
     setInstantRevealId((current) => current + 1);
     setConfettiVisible(!reduceMotion);
-    triggerCelebration();
+
     if (confettiTimeout.current) clearTimeout(confettiTimeout.current);
     confettiTimeout.current = setTimeout(() => {
       setConfettiVisible(false);
@@ -215,7 +222,7 @@ export function DiscoverPage() {
       setWheelResult(winner);
       setPendingWheelResult(null);
       setSpinning(false);
-      triggerCelebration();
+
     }
   }
 
@@ -240,20 +247,6 @@ export function DiscoverPage() {
         <PageTitle>Discover</PageTitle>
       </div>
       <AnimatePresence mode="wait" initial={false}>
-        {partnerWishes.length > 0 && screen === "landing" && (
-          <motion.section
-            animate={{ opacity: 1, y: 0 }}
-            className="discover-landing"
-            exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-            initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-            key="landing"
-            transition={{ duration: reduceMotion ? 0 : 0.22 }}
-          >
-            <Button className="discover-primary" onClick={() => setScreen("select")} variant="primary">
-              <Gift aria-hidden="true" className="size-5" /> Pick a Gift
-            </Button>
-          </motion.section>
-        )}
         {screen === "select" && (
           <motion.section
             animate={{ opacity: 1, y: 0 }}
@@ -263,20 +256,8 @@ export function DiscoverPage() {
             key="select"
             transition={{ duration: reduceMotion ? 0 : 0.22 }}
           >
-            <button className="discover-back" onClick={() => setScreen("landing")} type="button">
-              <ChevronLeft aria-hidden="true" className="size-4" /> Discover
-            </button>
             <div className="discovery-method-list">
-              <button aria-label="Spin the Wheel" className="discovery-method-card" onClick={() => setScreen("wheel")} type="button">
-                <span className="discovery-method-icon"><Compass aria-hidden="true" /></span>
-                <span className="discovery-method-copy"><strong>Spin the Wheel</strong></span>
-                <ChevronRight aria-hidden="true" className="discovery-method-chevron" />
-              </button>
-              <button aria-label="Instant Pick" className="discovery-method-card" onClick={() => setScreen("instant")} type="button">
-                <span className="discovery-method-icon"><Sparkles aria-hidden="true" /></span>
-                <span className="discovery-method-copy"><strong>Instant Pick</strong></span>
-                <ChevronRight aria-hidden="true" className="discovery-method-chevron" />
-              </button>
+              {DISCOVER_METHODS.map(method => <DiscoverAction key={method.id} icon={method.icon} label={method.label} onClick={() => setScreen(method.id)} />)}
             </div>
           </motion.section>
         )}
@@ -325,19 +306,19 @@ export function DiscoverPage() {
                     setSpinning(false);
                     if (reduceMotion) {
                       setWheelResult(winner);
-                      triggerCelebration();
+
                     } else {
                       spinTimeout.current = setTimeout(() => {
                         setWheelResult(winner);
-                        triggerCelebration();
+
                         spinTimeout.current = null;
                       }, 320);
                     }
                   }}
                 />
-                <Button disabled={spinning || restoringWheel} onClick={spinWheel} variant="secondary">
-                  <Compass aria-hidden="true" className="size-4" /> {spinning ? "Spinning" : restoringWheel ? "Restoring" : wheelResult ? "Spin Again" : "Spin"}
-                </Button>
+                <div className="discovery-wheel-actions">
+                  <Button disabled={spinning || restoringWheel} onClick={spinWheel}>Spin</Button>
+                </div>
               </>
             ) : null}
           </motion.section>
@@ -355,9 +336,7 @@ export function DiscoverPage() {
               <ChevronLeft aria-hidden="true" className="size-4" /> Choose a method
             </button>
             <h2>Instant Pick</h2>
-            <Button disabled={!partnerWishes.length} onClick={chooseInstant} variant="secondary">
-              <Zap aria-hidden="true" className="size-4" /> Pick a Gift
-            </Button>
+            <div className="discovery-instant-actions"><Button disabled={!partnerWishes.length} onClick={chooseInstant}>Pick</Button></div>
             <AnimatePresence mode="wait" initial={false}>
               {currentInstantResult && (
                 <motion.div
@@ -602,11 +581,13 @@ export function SurprisesPage() {
 
 function ChoiceRow<T extends string>({
   label,
+  description,
   value,
   options,
   onChange,
 }: {
   label: string;
+  description: string;
   value: T;
   options: { value: T; label: string }[];
   onChange: (value: T) => void;
@@ -614,7 +595,7 @@ function ChoiceRow<T extends string>({
   const groupId = useId();
   return (
     <div className="setting-row setting-choice-row">
-      <span>{label}</span>
+      <span className="setting-copy"><span className="setting-title">{label}</span><span className="setting-description">{description}</span></span>
       <LayoutGroup id={`choice-${groupId}`}>
         <div aria-label={label} className="setting-choices" role="group">
           {options.map((option) => (
@@ -638,16 +619,18 @@ function ChoiceRow<T extends string>({
 
 function SwitchRow({
   label,
+  description,
   checked,
   onChange,
 }: {
   label: string;
+  description: string;
   checked: boolean;
   onChange: (value: boolean) => void;
 }) {
   return (
     <div className="setting-row">
-      <span>{label}</span>
+      <span className="setting-copy"><span className="setting-title">{label}</span><span className="setting-description">{description}</span></span>
       <motion.button
         aria-checked={checked}
         aria-label={label}
@@ -669,11 +652,10 @@ function AppearanceRow() {
   const choices = [
     { value: "light" as const, label: "Light", icon: Sun },
     { value: "dark" as const, label: "Dark", icon: Moon },
-    { value: "system" as const, label: "System", icon: Settings2 },
   ];
   return (
     <div className="appearance-row">
-      <span>Appearance</span>
+      <span className="setting-copy"><span className="setting-title">Make it yours</span><span className="setting-description">Light or dark. Your space, your choice.</span></span>
       <LayoutGroup id={`appearance-${groupId}`}>
         <div aria-label="Appearance" className="appearance-options" role="group">
           {choices.map(({ value, label, icon: Icon }) => (
@@ -696,81 +678,35 @@ function AppearanceRow() {
   );
 }
 
-function BackgroundPresetRow({
-  value,
-  onChange,
-}: {
-  value: BackgroundStyle;
-  onChange: (value: BackgroundStyle) => void;
-}) {
-  return (
-    <div className="setting-background-row">
-      <span>Background</span>
-      <div aria-label="Background" className="background-presets" role="group">
-        {BACKGROUND_PRESETS.map((preset) => (
-          <motion.button
-            aria-label={preset.label}
-            aria-pressed={value === preset.value}
-            className={value === preset.value ? "selected" : ""}
-            key={preset.value}
-            onClick={() => onChange(preset.value)}
-            title={preset.label}
-            type="button"
-            whileTap={{ scale: 0.96 }}
-          >
-            <span
-              aria-hidden="true"
-              className="background-preset-swatch"
-              style={{
-                backgroundImage: `linear-gradient(135deg, ${preset.colors[0]}, ${preset.colors[1]} 54%, ${preset.colors[2]})`,
-              }}
-            />
-            <span>{preset.label}</span>
-          </motion.button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function SettingsPage() {
   const { settings, updateSettings } = useAppSettings();
   function change<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
     updateSettings({ [key]: value } as Pick<AppSettings, K>);
   }
   return (
-    <div className="page-enter">
+    <div className="page-enter settings-page">
       <PageTitle>Settings</PageTitle>
       <div className="settings-groups">
-        <section className="settings-group" aria-label="Appearance">
+        <section className="settings-group settings-appearance" aria-label="Appearance">
+          <h2 className="settings-section-title"><Palette aria-hidden="true" size={17} />Appearance</h2>
           <AppearanceRow />
-          <BackgroundPresetRow value={settings.backgroundStyle} onChange={(value) => change("backgroundStyle", value)} />
-          <ChoiceRow label="Gradient" value={settings.gradientIntensity} onChange={(value) => change("gradientIntensity", value)} options={[
-            { value: "off", label: "Off" }, { value: "subtle", label: "Subtle" }, { value: "vivid", label: "Vivid" },
-          ]} />
-          <SwitchRow checked={settings.ambientAnimation} label="Background motion" onChange={(value) => change("ambientAnimation", value)} />
         </section>
         <section className="settings-group" aria-label="Wishlist">
-          <ChoiceRow label="Default layout" value={settings.defaultLayout} onChange={(value) => change("defaultLayout", value)} options={[
+          <h2 className="settings-section-title"><Grid2X2 aria-hidden="true" size={17} />Wishlist</h2>
+          <ChoiceRow label="Default layout" description="How your wishes appear." value={settings.defaultLayout} onChange={(value) => change("defaultLayout", value)} options={[
             { value: "grid", label: "Grid" }, { value: "list", label: "List" },
           ]} />
-          <ChoiceRow label="Layout density" value={settings.density} onChange={(value) => change("density", value)} options={[
+          <ChoiceRow label="Layout density" description="A little breathing room, or more in view." value={settings.density} onChange={(value) => change("density", value)} options={[
             { value: "comfortable", label: "Comfortable" }, { value: "compact", label: "Compact" },
           ]} />
         </section>
         <section className="settings-group" aria-label="Motion and display">
-          <SwitchRow checked={settings.fluidAnimations} label="Animations" onChange={(value) => change("fluidAnimations", value)} />
-          <SwitchRow checked={settings.scrollBezel} label="Scroll bezel" onChange={(value) => change("scrollBezel", value)} />
-          <SwitchRow checked={settings.reduceTransparency} label="Reduce transparency" onChange={(value) => change("reduceTransparency", value)} />
-          <SwitchRow checked={settings.autoPlayVideos} label="Auto-play videos" onChange={(value) => change("autoPlayVideos", value)} />
+          <h2 className="settings-section-title"><SlidersHorizontal aria-hidden="true" size={17} />Motion & display</h2>
+          <SwitchRow checked={settings.fluidAnimations} label="Animations" description="Smooth transitions and moving light rays." onChange={(value) => change("fluidAnimations", value)} />
+          <SwitchRow checked={settings.reduceTransparency} label="Reduce transparency" description="Solid surfaces for a clearer view." onChange={(value) => change("reduceTransparency", value)} />
+          <SwitchRow checked={settings.autoPlayVideos} label="Auto-play videos" description="Let videos start automatically." onChange={(value) => change("autoPlayVideos", value)} />
         </section>
-        <section className="settings-group account-preview">
-          <div className="setting-row">
-            <span>Account</span>
-            <span className="account-badge">Preview</span>
-          </div>
-          <p>No account is connected.</p>
-        </section>
+        <p className="settings-device-note">Preferences are saved on this device.</p>
       </div>
     </div>
   );

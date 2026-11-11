@@ -323,6 +323,7 @@ const GooeyNav = ({
   style
 }: GooeyNavProps) => {
   const [innerIndex, setInnerIndex] = useState(initialActiveIndex);
+  const iconOnly = items.length > 0 && items.every(item => !!item.icon);
   const current = Math.min(Math.max(0, activeIndex ?? innerIndex), Math.max(0, items.length - 1));
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -560,6 +561,8 @@ const GooeyNav = ({
         });
       }
 
+      // Icon navigation paints each SVG once. Text navigation retains the gooey ink mask.
+      if (!iconOnly) {
       const settledPill = boxes.length === 1 && !blobs.length;
       if (settledPill) {
         const box = boxes[0];
@@ -568,6 +571,8 @@ const GooeyNav = ({
         overlay.style.clipPath = `path('${trace(boxes, blobs, smooth) || 'M0,0Z'}')`;
       }
       overlay.style.visibility = 'visible';
+
+      }
 
       if (!pipeline || !gl) {
         const box = shape(target, 1);
@@ -836,7 +841,7 @@ const GooeyNav = ({
       }
       engineRef.current = null;
     };
-  }, [items.length, reducedMotion]);
+  }, [items.length, reducedMotion, iconOnly]);
 
   useEffect(() => {
     engineRef.current?.go(current);
@@ -856,6 +861,7 @@ const GooeyNav = ({
           {item.label && <span className={item.icon ? 'gooey-nav__label sr-only' : 'gooey-nav__label'}>{item.label}</span>}
         </>
       );
+      if (!interactive && iconOnly) return null;
       if (!interactive) {
         return (
           <li key={index} className="gooey-nav__item">
@@ -893,7 +899,7 @@ const GooeyNav = ({
     });
 
   return (
-    <nav aria-label="Main navigation"
+    <nav aria-label="Main navigation" data-icon-only={iconOnly ? "" : undefined}
       className={`gooey-nav ${SIZES[size] ?? SIZES.md}${frame ? ' gooey-nav--framed' : ''} ${className}`.trim()}
       style={{ ...THEMES[palette], '--gn-pill': pillColor, '--gn-active-ink': textColor, ...style } as CSSProperties}
     >

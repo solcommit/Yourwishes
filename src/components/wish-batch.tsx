@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode, type ComponentPropsWithoutRef } from "react";
 import "./wish-batch.css";
+import { CircleLoader } from "./ui/circle-loader";
 
 export const WishFlightOrigin = createContext<(() => DOMRect | undefined) | null>(null);
 const BatchPhotos = createContext(false);
@@ -50,5 +51,5 @@ export function WishBatch({ children, className, ...props }: { children: ReactNo
     check();
     return () => { alive = false; observer.disconnect(); cancelAnimationFrame(frame); flights.forEach(flight => flight.cancel()); };
   }, [getOrigin]);
-  return <BatchPhotos.Provider value={true}><div {...props} ref={host} className={`wish-batch ${className}`} data-ready={ready} data-flight={!!getOrigin} data-arriving={arriving} aria-busy={!ready} inert={!ready || arriving}>{children}</div></BatchPhotos.Provider>;
+  return <BatchPhotos.Provider value={true}><div className="wish-batch-stage">{!ready && <div className="wish-batch-loading"><CircleLoader /></div>}<div {...props} ref={host} className={`wish-batch ${className}`} data-ready={ready} data-flight={!!getOrigin} data-arriving={arriving} aria-busy={!ready} inert={!ready || arriving}>{children}</div></div></BatchPhotos.Provider>;
 }

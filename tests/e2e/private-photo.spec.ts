@@ -28,7 +28,7 @@ test.beforeAll(async () => {
   });
   server=createServer((request,response)=>{
     if(request.url==="/app.js"){response.setHeader("Content-Type","text/javascript");response.end(output.outputFiles[0].contents);}
-    else {response.setHeader("Content-Type","text/html");response.end('<style>.private-wish-photo{display:block;width:140px;height:140px}'+readFileSync('src/components/wish-batch.css','utf8')+'</style><div id="root"></div><script type="module" src="/app.js"></script>');}
+    else {response.setHeader("Content-Type","text/html");response.end('<style>.private-wish-photo{display:block;width:140px;height:140px}'+readFileSync('src/components/wish-batch.css','utf8')+readFileSync('src/components/ui/circle-loader.css','utf8')+'</style><div id="root"></div><script type="module" src="/app.js"></script>');}
   });
   await new Promise<void>(resolve=>server.listen(0,"127.0.0.1",resolve));
   const address=server.address(); if(!address||typeof address==="string")throw Error("Harness unavailable");
@@ -46,14 +46,19 @@ test("failed thumbnail shows toast and a working retry; remount uses memory; sig
   await page.getByRole("button",{name:"Retry photo for Fixture"}).click();
   await expect(page.locator(".wish-image")).toHaveAttribute("src",/^blob:/);
   await expect(page.getByRole("button",{name:"Retry photo for Fixture"})).toHaveCount(0);
-  await page.getByRole("button",{name:"Toggle"}).click();await page.getByRole("button",{name:"Toggle"}).click();
+  const firstUrl = await page.locator(".wish-image").getAttribute("src");
+  await page.evaluate(()=>{const original=Date.now;Date.now=()=>original()+3_600_000;});
+  for(let i=0;i<8;i++) {
+    await page.getByRole("button",{name:"Toggle"}).click();await page.getByRole("button",{name:"Toggle"}).click();
+    await expect(page.locator(".wish-image")).toHaveAttribute("src",firstUrl!);
+  }
   await expect(page.locator(".wish-image")).toHaveAttribute("src",/^blob:/);
   expect(requests).toBe(2);
   await page.evaluate(()=>window.dispatchEvent(new Event("yourwishes-session-ending")));
   await expect(page.locator(".wish-image")).not.toHaveAttribute("src",/^blob:/);
 });
 
-test("shared pending requests are deduplicated, expire, and cannot fill cache after clear",async({page})=>{
+test("shared pending requests are deduplicated, survive time passage, and cannot fill cache after clear",async({page})=>{
   let requests=0;
   const image=await sharp({create:{width:8,height:8,channels:3,background:"#cc4488"}}).webp().toBuffer();
   await page.route("**/api/wishlist/images/**",async route=>{requests++;await route.fulfill({contentType:"image/webp",body:image});});
@@ -66,7 +71,7 @@ test("shared pending requests are deduplicated, expire, and cannot fill cache af
   await evaluate(`window.cache.prunePrivatePhotos(new Set())`);
   await evaluate(`window.cache.privatePhoto('${path}')`); expect(requests).toBe(3);
   await evaluate(`Date.now=(()=>{const original=Date.now;return()=>original()+31000})()`);
-  await evaluate(`window.cache.privatePhoto('${path}')`); expect(requests).toBe(4);
+  await evaluate(`window.cache.privatePhoto('${path}')`); expect(requests).toBe(3);
   await page.route("**/api/wishlist/images/cccc*",()=>{});
   const pending="/api/wishlist/images/cccccccc-cccc-4ccc-8ccc-cccccccccccc";
   await evaluate(`void (window.pendingPhoto=window.cache.privatePhoto('${pending}').then(()=>false,()=>true))`);
@@ -87,8 +92,10 @@ test("all cards remain hidden until every photo loads, including offscreen; reve
   await expect(page.locator('.wish-image[src^="blob:"]')).toHaveCount(2);
   await expect(page.locator('.wish-batch')).toHaveAttribute('data-ready','false');
   await expect(page.getByRole('button',{name:/Card/})).toHaveCount(0);
-  await expect(page.locator('.app-loader')).toHaveCount(0);
+  await expect(page.getByRole('status')).toBeVisible();
+  await expect(page.locator('.circle-loader-ring')).toHaveCSS('animation-name','circle-loader-spin');
   release();await expect(page.locator('.wish-batch')).toHaveAttribute('data-ready','true');
+  await expect(page.locator('.circle-loader')).toHaveCount(0);
   await expect(page.getByRole('button',{name:/Card/})).toHaveCount(3);
   await expect(page.locator('.wish-batch')).toHaveCSS('animation-name','wish-batch-reveal');
   await page.emulateMedia({reducedMotion:'reduce'});
@@ -100,4 +107,13 @@ test("a failed photo releases the batch and exposes retry instead of hiding ever
   await page.goto(url+'?batch');
   await expect(page.locator('.wish-batch')).toHaveAttribute('data-ready','true');
   await expect(page.getByRole('button',{name:/Retry photo/})).toBeVisible();
+});
+
+test("image request concurrency is bounded and queued images still complete",async({page})=>{
+  const image=await sharp({create:{width:8,height:8,channels:3,background:"#cc4488"}}).webp().toBuffer();
+  let running=0,peak=0;
+  await page.route("**/api/wishlist/images/**",async route=>{running++;peak=Math.max(peak,running);await new Promise(resolve=>setTimeout(resolve,80));await route.fulfill({contentType:"image/webp",body:image});running--;});
+  await page.goto(url);await expect(page.locator(".wish-image")).toHaveAttribute("src",/^blob:/);
+  await page.evaluate(async()=>{const cache=(window as unknown as {cache:{privatePhoto:(url:string)=>Promise<Blob>}}).cache;await Promise.all(Array.from({length:18},(_,index)=>cache.privatePhoto('/api/wishlist/images/'+index.toString(16).padStart(8,'0')+'-aaaa-4aaa-8aaa-aaaaaaaaaaaa?width=320')));});
+  expect(peak).toBeLessThanOrEqual(6);
 });

@@ -1,0 +1,8 @@
+.app-toast-stack { position:fixed; z-index:100000; right:max(18px,env(safe-area-inset-right)); bottom:calc(104px + env(safe-area-inset-bottom)); display:flex; flex-direction:column-reverse; gap:0; width:min(376px,calc(100vw - 36px)); pointer-events:none; }
+.app-toast-stack .swipe-toast { pointer-events:auto; width:100%; }
+.app-toast-stack .swipe-toast__card { border:1px solid var(--border); box-shadow:inset 0 1px 0 rgb(255 255 255 / 9%),0 14px 40px -12px rgb(0 0 0 / 35%); }
+.app-toast-stack .swipe-toast__title,.app-toast-stack .swipe-toast__desc { overflow-wrap:anywhere; }
+.app-toast-stack .swipe-toast__close { width:44px; height:44px; border-radius:999px; }
+.app-toast-stack .swipe-toast__close::before { inset:0; }
+.app-toast-stack :is(.swipe-toast__card,.swipe-toast__close):focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+:root[data-fluid-animations="false"] .app-toast-stack .swipe-toast__lift { transition:none; }

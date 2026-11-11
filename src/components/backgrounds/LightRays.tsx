@@ -83,7 +83,7 @@ interface Program {
   uniforms: Record<string, WebGLUniformLocation | null>;
 }
 
-const PIXEL_BUDGET = 1e6;
+const PIXEL_BUDGET = 300_000;
 const MAX_PULSES = 4;
 
 const ORIGINS: Record<RaysOrigin, Origin> = {
@@ -431,8 +431,8 @@ const LightRays = ({
 
     const frame = (now: number) => {
       raf = 0;
-      // Decorative background: cap drawing at 30fps to spare image/UI work.
-      if (now - last < 1000 / 30) { raf = requestAnimationFrame(frame); return; }
+      // Decorative background: cap drawing at 24fps to spare image/UI work.
+      if (now - last < 1000 / 24) { raf = requestAnimationFrame(frame); return; }
       if (resizePending) {
         resizePending = false;
         applyResize();

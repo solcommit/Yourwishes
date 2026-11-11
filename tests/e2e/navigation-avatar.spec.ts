@@ -33,3 +33,15 @@ test('partner avatar expands on desktop hover and mobile tap without opening an 
  await page.mouse.move(800,600);await expect(avatar).toHaveAttribute('aria-expanded','false');
  const context=await browser.newContext({viewport:{width:375,height:812},isMobile:true,hasTouch:true});try{const mobile=await context.newPage();await mobile.goto(url);const target=mobile.getByRole('button',{name:/Partner synced/});await target.tap();await expect(target).toHaveAttribute('aria-expanded','true');await target.tap();await expect(target).toHaveAttribute('aria-expanded','false');await expect(mobile.getByRole('dialog')).toHaveCount(0);}finally{await context.close();}
 });
+
+test('icon navigation has one SVG per route and selected contrast without a clipped duplicate',async({page})=>{
+ await page.goto(url);const nav=page.getByRole('navigation',{name:'Main navigation'});
+ await expect(nav.locator('.gooey-nav__icon svg')).toHaveCount(4);
+ await expect(nav.locator('.gooey-nav__list--active .gooey-nav__icon')).toHaveCount(0);
+ await expect(nav.locator('.gooey-nav__list--active')).toHaveCSS('display','none');
+ for(const name of ['Home','Partner','Mine','Discover']){
+   const link=nav.getByRole('link',{name,exact:true});await link.click();await expect(link).toHaveAttribute('aria-current','page');
+   await expect.poll(()=>link.evaluate(e=>getComputedStyle(e).color)).toBe(await nav.evaluate(e=>{const probe=document.createElement('span');probe.style.color='var(--gn-active-ink)';e.append(probe);const color=getComputedStyle(probe).color;probe.remove();return color;}));
+ }
+ await page.screenshot({path:'performance-results/navigation-single-icon.png'});
+});

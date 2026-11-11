@@ -1,0 +1,27 @@
+/* Shared Gooey Nav surfaces for actions and compact view controls. */
+:root { --control-frame:rgba(240,240,243,.8); --control-edge:rgba(24,24,27,.09); --control-highlight:rgba(255,255,255,.95); --control-pill:#26232e; --control-ink:#fff; }
+.dark { --control-frame:rgba(38,35,46,.66); --control-edge:rgba(255,255,255,.1); --control-highlight:rgba(255,255,255,.07); --control-pill:#f5f5f7; --control-ink:#222126; }
+.app-button,.icon-button,.home-control,.home-add-icon,.photo-retry,.discover-back,.gallery-status,.detail-gallery-arrow { border:1px solid var(--control-edge); border-radius:999px; box-shadow:inset 0 1px 0 var(--control-highlight),0 6px 18px -10px rgb(0 0 0 / 30%); background:var(--control-frame); color:var(--foreground); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); }
+.app-button-primary { background:var(--control-pill); color:var(--control-ink); }
+.app-button-primary:hover { filter:brightness(.94); }
+.app-button-secondary:hover,.app-button-ghost:hover,.icon-button:hover,.home-control:hover,.photo-retry:hover,.discover-back:hover,.gallery-status:hover,.detail-gallery-arrow:hover { background:color-mix(in srgb,var(--control-frame) 75%,var(--foreground)); }
+.app-button-danger { color:var(--system-red); border-color:color-mix(in srgb,var(--system-red) 35%,var(--control-edge)); background:color-mix(in srgb,var(--system-red) 8%,var(--surface)); }
+.app-button-danger:hover { background:color-mix(in srgb,var(--system-red) 16%,var(--surface)); }
+.home-add-icon { border-radius:999px; background:var(--control-frame); }
+.home-add-icon::before { border-radius:inherit; }
+.layout-picker { gap:4px; padding:5px; border:1px solid var(--control-edge); border-radius:999px; background:var(--control-frame); box-shadow:inset 0 1px 0 var(--control-highlight),0 6px 18px -10px rgb(0 0 0 / 30%); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); }
+.layout-picker .icon-button { border:0; border-radius:999px; background:transparent; color:var(--muted); -webkit-backdrop-filter:none; backdrop-filter:none; }
+.layout-picker .icon-button.selected { background:var(--control-pill); color:var(--control-ink); box-shadow:0 2px 8px rgb(0 0 0 / 12%); }
+.layout-picker .icon-button:hover:not(.selected) { background:color-mix(in srgb,var(--foreground) 8%,transparent); }
+.priority-sort-toggle[aria-pressed="true"] { background:var(--control-pill); color:var(--control-ink); }
+.profile-menu { padding:6px; gap:4px; border:1px solid var(--control-edge); border-radius:26px; background:var(--control-frame); -webkit-backdrop-filter:blur(12px) saturate(1.6); backdrop-filter:blur(12px) saturate(1.6); }
+.profile-menu-action { border-radius:999px; min-height:44px; }
+.profile-menu-action + .profile-menu-action { border-top:0; }
+.profile-menu-action:hover { background:color-mix(in srgb,var(--foreground) 10%,transparent); }
+.photo-retry,.discover-back { min-height:44px; padding:8px 14px; }
+.detail-gallery-arrow { min-width:44px; min-height:44px; }
+:is(.home-add-icon,.photo-retry,.discover-back,.gallery-status,.detail-gallery-arrow,.profile-menu-action):focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+:root[data-reduce-transparency="true"] :is(.app-button,.icon-button,.home-control,.home-add-icon,.layout-picker,.profile-menu,.photo-retry,.discover-back,.gallery-status,.detail-gallery-arrow) { -webkit-backdrop-filter:none; backdrop-filter:none; background:var(--surface); }
+:root[data-reduce-transparency="true"] .app-button-primary,:root[data-reduce-transparency="true"] .layout-picker .icon-button.selected { background:var(--control-pill); color:var(--control-ink); }
+
+.select-trigger { border-radius:999px; }

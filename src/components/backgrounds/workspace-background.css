@@ -1,11 +1,3 @@
-.workspace-light-rays {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: conic-gradient(from 158deg at 50% -15%, transparent 0deg, color-mix(in srgb, var(--ambient-one) 12%, transparent) 14deg, transparent 22deg, color-mix(in srgb, var(--ambient-three) 12%, transparent) 33deg, transparent 44deg);
-}
-:root[data-background-style="light-rays"] { --ambient-one: #92b9ff; --ambient-two: #b4a3e7; --ambient-three: #6384cf; }
-.app-frame:has(> .workspace-light-rays)::before,
-.app-frame:has(> .workspace-light-rays)::after { animation: none; }
-@media (prefers-reduced-motion: reduce) { .workspace-light-rays canvas { display: none; } }
+.workspace-rays { position:fixed; inset:0; z-index:-1; pointer-events:none; }
+/* Preserve ray alpha: a zero RGB shader input would erase the beam itself. */
+.workspace-rays[data-tone="black"] { filter:brightness(0); }

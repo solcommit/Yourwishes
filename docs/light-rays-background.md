@@ -1,9 +1,13 @@
-# Theme-aware Light Rays
+# Light Rays
 
-The existing React Bits Light Rays integration is now active for all 11 background presets, retaining the selected palette and light/dark appearance. The dedicated Light Rays preset keeps its existing blue tint; other presets use their own primary palette color. The existing source and React Bits license notice are preserved.
+One React Bits Light Rays instance, top-center, behind the authenticated workspace.
+Source: https://reactbits.dev/c/backgrounds/light-rays ; existing vendored implementation
+and public/licenses/react-bits.txt attribution retained. No new dependencies.
 
-The component remains lazy-loaded with an isolated loading boundary. Only one canvas is mounted for the workspace; it cannot intercept clicks. Existing gradient surfaces remain as a fallback. Turning gradient intensity Off removes the ray layer. Ambient animation Off, Fluid animations Off, Reduce transparency or system reduced motion removes the WebGL renderer and leaves a static, theme-tinted fallback. The original ambient drift is stopped while the ray layer is present to avoid stacking background animation work. Existing renderer caps DPR to 1 and rendering to 30fps, pauses in hidden tabs and cleans up its WebGL resources.
-
-No authentication, data, database, image upload or deployment changes are needed for this integration.
-
-Validation: synthetic Chrome/WebGL checks passed for all 11 presets in both light and dark (22 combinations), static fallback settings, gradient Off, system reduced motion, mobile 390px and click-through. Zero runtime/hydration errors after adding a hydration-safe boundary. Screenshots reviewed for Sunset Glow light/dark. Headless software WebGL is not a physical-device GPU performance measurement.
+Only Light and Dark app appearances are exposed. Dark is the initial default;
+legacy System preferences resolve once to the device appearance on migration.
+Light uses a brightness(0) filter to make the rays black while retaining shader
+alpha; Dark uses white with atmosphere/color tint disabled. No background controls,
+palettes, pointer effects, or scroll bezel. Existing animation accessibility settings
+hold a still frame; hidden-tab/offscreen pause and the 24fps cap remain.
+Canvas DPR is capped at .75 and its pixel budget at 300k. This is still a GPU effect, not a free CSS background.

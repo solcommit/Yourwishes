@@ -18,24 +18,25 @@ export function ProfilePhotoProvider({userId,children}:{userId:string;children:R
   const [partner,setPartner]=useState<Partner>({nickname:"Partner",photo:null});
   const [photo,setPhoto]=useState<string|null>(null);
   const [error,setError]=useState("");
-  const active=useRef(false),saving=useRef(false),revision=useRef(0);
+  const active=useRef(false),saving=useRef(false),revision=useRef(0),lastRefresh=useRef(0);
   const pending=useRef<AbortController|null>(null);
-  const refresh=useCallback(async()=>{
-    if(!active.current||saving.current||pending.current||!navigator.onLine)return;
+  const refresh=useCallback(async(force=false)=>{
+    if(!active.current||saving.current||pending.current||!navigator.onLine||(!force&&Date.now()-lastRefresh.current<30_000))return;
     const controller=new AbortController();pending.current=controller;const generation=++revision.current;
     try{
       const result=await requestProfile({signal:AbortSignal.any([controller.signal,AbortSignal.timeout(30_000)])});
-      if(active.current&&generation===revision.current&&result.userId===userId){setPhoto(result.photo);if(result.nickname)setNickname(result.nickname);if(result.partner)setPartner(result.partner);setError("");}
+      if(active.current&&generation===revision.current&&result.userId===userId){setPhoto(result.photo);if(result.nickname)setNickname(result.nickname);if(result.partner)setPartner(result.partner);lastRefresh.current=Date.now();setError("");}
     }catch(cause){if(active.current&&!controller.signal.aborted)setError(cause instanceof Error?cause.message:"Profile could not sync.");}
     finally{if(pending.current===controller)pending.current=null;}
   },[userId]);
   useEffect(()=>{
     active.current=true;
     const invalidate = () => { revision.current++; };
-    const focus=()=>{if(document.visibilityState==="visible")void refresh();};
+    const focus=()=>{if(document.visibilityState==="visible")void refresh(true);};
+    const poll=()=>{if(document.visibilityState==="visible")void refresh();};
     const clear=()=>{active.current=false;revision.current++;pending.current?.abort();setPhoto(null);setNickname(null);setPartner({nickname:"Partner",photo:null});setError("");};
     let stopped=false;queueMicrotask(()=>{if(!stopped)void refresh();});
-    const timer=setInterval(focus,30_000);
+    const timer=setInterval(poll,60_000);
     window.addEventListener("focus",focus);window.addEventListener("online",focus);document.addEventListener("visibilitychange",focus);
     window.addEventListener("yourwishes-session-ending",clear);window.addEventListener("yourwishes-private-data-cleared",clear);
     return()=>{stopped=true;active.current=false;invalidate();pending.current?.abort();pending.current=null;clearInterval(timer);window.removeEventListener("focus",focus);window.removeEventListener("online",focus);document.removeEventListener("visibilitychange",focus);window.removeEventListener("yourwishes-session-ending",clear);window.removeEventListener("yourwishes-private-data-cleared",clear);};

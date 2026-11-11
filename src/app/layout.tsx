@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
+import "@/components/ui/gooey-controls.css";
 
 export const metadata: Metadata = {
   title: "Yourwishes",

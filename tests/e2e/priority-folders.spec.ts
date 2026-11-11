@@ -16,7 +16,7 @@ test.beforeAll(async()=>{
     builder.onResolve({filter:/^next\/(image|link)$/},args=>({path:args.path,namespace:'fixture'}));
     builder.onLoad({filter:/.*/,namespace:'fixture'},args=>({loader:'jsx',resolveDir:process.cwd(),contents:args.path==='profile'?`export const useProfilePhoto=()=>({partner:{nickname:'Partner',photo:null}});`:args.path==='settings'?`export const BACKGROUND_PRESETS=[];export const useAppSettings=()=>({settings:{defaultLayout:'grid',fluidAnimations:true},updateSettings:()=>{}});`:args.path==='workspace'?`
       const items=[{id:'one',name:'Partner common',priority:'Common',owner:'partner'},{id:'two',name:'Partner essential',priority:'Legendary',owner:'partner'},{id:'three',name:'Another common',priority:'Common',owner:'partner'},{id:'four',name:'Own private wish',priority:'Rare',owner:'you'}].map(item=>({...item,images:location.search.includes('photos')&&item.id==='one'?['/api/wishlist/images/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa']:[],image:'',price:null}));
-      export const useWorkspace=()=>({items}); export const useWorkspaceActions=()=>({openItem:item=>{window.opened=item.name;}});
+      export const useWorkspace=()=>({items:location.search.includes("many")?Array.from({length:55},(_,index)=>({...items[0],id:"wish-"+index,name:"Wish "+index})):items}); export const useWorkspaceActions=()=>({openItem:item=>{window.opened=item.name;}});
     `:args.path==='next/image'?`import React from 'react';export default function Image({unoptimized,...props}){return <img {...props}/>}`:`import React from 'react';export default function Link({href,children,...props}){return <a href={href} {...props}>{children}</a>}` }));
   }}]});
   const css=(readFileSync('src/components/browser-interactions.css','utf8')+readFileSync('src/app/globals.css','utf8')).replace(/^@import.*$/gm,'')+['Folder.css','priority-folders.css'].map(file=>readFileSync('src/components/priority/'+file,'utf8')).join('\n')+readFileSync('src/components/wish-batch.css','utf8')+'body{margin:18px}.desktop-page-heading{display:flex}.priority-browser{width:100%}';
@@ -108,4 +108,13 @@ test('desktop mouse drags actual image previews without native image dragging or
   expect(await page.evaluate(()=>(window as unknown as {opened?:string}).opened)).toBeUndefined();
   await expect(page.locator('.folder-root')).not.toHaveAttribute('data-dragging','');
   await image.click();expect(await page.evaluate(()=>(window as unknown as {opened?:string}).opened)).toBe('Partner common');
+});
+
+test('large collections load 24 cards per batch without remounting earlier pages',async({page})=>{
+  await page.goto(url+'?many');await expect(page.locator('.wish-tile')).toHaveCount(24);
+  await page.locator('.wish-tile').first().evaluate(element=>element.setAttribute('data-retained','true'));
+  await page.getByRole('button',{name:'Show more wishes'}).click();await expect(page.locator('.wish-tile')).toHaveCount(48);
+  await expect(page.locator('.wish-tile').first()).toHaveAttribute('data-retained','true');
+  await page.getByRole('button',{name:'Show more wishes'}).click();await expect(page.locator('.wish-tile')).toHaveCount(55);
+  await expect(page.getByRole('button',{name:'Show more wishes'})).toHaveCount(0);
 });

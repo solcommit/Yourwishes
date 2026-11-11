@@ -137,3 +137,7 @@
     color: var(--gn-ink);
   }
 }
+
+/* Avoid two differently colored SVG copies being composited through clip-path on Safari. */
+.gooey-nav[data-icon-only] .gooey-nav__list--active { display:none; }
+.gooey-nav[data-icon-only] .gooey-nav__item[data-active] .gooey-nav__link { color:var(--gn-active-ink); }

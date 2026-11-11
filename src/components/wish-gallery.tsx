@@ -6,7 +6,7 @@ import { invalidatePrivatePhoto, privatePhoto } from "@/lib/private-photo-cache"
 import { toast } from "sonner";
 import { wishLayoutTransition } from "@/lib/wish-transition";
 import { useAppSettings } from "./settings-provider";
-import { ChevronLeft } from "lucide-react";
+import { Download, ChevronLeft } from "lucide-react";
 import { motion, useIsPresent, useReducedMotion } from "motion/react";
 import { memo, useCallback, useEffect, useRef, useState } from "react";
 
@@ -46,7 +46,9 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
     const controller = new AbortController();
     const entry: Photo = { url: "", controller, promise: Promise.resolve(""), ready: false };
     entry.promise = (async () => {
-      const blob = await privatePhoto(src);
+      const requested = Math.min(960, Math.max(320, window.innerWidth * Math.min(window.devicePixelRatio || 1, 2)));
+      const width = requested <= 320 ? 320 : requested <= 640 ? 640 : 960;
+      const blob = await privatePhoto(`${src}${src.includes("?") ? "&" : "?"}width=${width}`);
       if (controller.signal.aborted) throw new Error("Canceled");
       entry.url = URL.createObjectURL(blob);
       const decoder = new globalThis.Image();
@@ -56,7 +58,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       await decoder.decode();
       if (controller.signal.aborted) throw new Error("Canceled");
       entry.ready = true;
-      // Keep at most three originals/decoded resources, so returning to an image
+      // Keep at most three display-sized decoded resources, so returning to an image
       // doesn't decode it again. Never revoke the image currently on screen.
       for (const [key, old] of cache.current) {
         if (cache.current.size <= 3) break;
@@ -65,7 +67,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       }
       return entry.url;
     })().catch((cause) => {
-      if (!controller.signal.aborted) invalidatePrivatePhoto(src);
+      if (!controller.signal.aborted) for (const width of [320,640,960]) invalidatePrivatePhoto(`${src}${src.includes("?") ? "&" : "?"}width=${width}`);
       discard(entry);
       if (cache.current.get(src) === entry) cache.current.delete(src);
       throw cause;
@@ -118,6 +120,27 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
     return () => element.removeEventListener("wheel", wheel);
   }, [images.length, show]);
 
+  const [downloading, setDownloading] = useState(false);
+  async function download() {
+    if (downloading || !images[active]) return;
+    setDownloading(true);
+    let url = "";
+    try {
+      const blob = await privatePhoto(images[active]);
+      url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const extension = ({ "image/webp": "webp", "image/jpeg": "jpg", "image/png": "png", "image/gif": "gif" } as Record<string, string>)[blob.type] || "jpg";
+      link.download = `${name.replace(/[<>:"/\\|?*\x00-\x1f]/g, "_").slice(0, 80) || "wish"}-${active + 1}.${extension}`;
+      document.body.append(link); link.click(); link.remove();
+      // Safari needs the object URL to remain alive while the download starts.
+      const downloadedUrl = url;
+      setTimeout(() => URL.revokeObjectURL(downloadedUrl), 30_000);
+      url = "";
+    } catch { toast.error("Could not download photo", { description: "Check your connection and try again." }); }
+    finally { if (url) URL.revokeObjectURL(url); setDownloading(false); }
+  }
+
   const cover = cache.current.get(images[0]);
   const exitingCover = !present && (preview || (cover?.ready ? cover.url : undefined));
   const src = exitingCover || displayed.src;
@@ -134,6 +157,7 @@ export const WishGallery = memo(function WishGallery({ images, preview, sharedId
       onTouchEnd={(event) => { const start = touch.current, end = event.changedTouches[0]; touch.current = null; if (!start || !end || images.length < 2) return; const x = end.clientX - start.x, y = end.clientY - start.y; if (Math.abs(x) > 40 && Math.abs(x) > Math.abs(y) * 1.25) show(x < 0 ? 1 : -1); }}
       onTouchCancel={() => { touch.current = null; }}>
       {src ? <Image key={src} className={`detail-image ${navigated.current && present && !reduceMotion ? "gallery-photo-enter" : ""}`} data-direction={direction.current < 0 ? "back" : "forward"} src={src} alt={`${name}, photo ${shownIndex + 1}`} width={960} height={960} unoptimized draggable={false} /> : <span className="detail-image detail-image-empty" />}
+      {present && <button className="app-button app-button-secondary gallery-download" type="button" disabled={downloading} onClick={() => void download()}><Download aria-hidden="true" size={17} />{downloading ? "Downloading…" : "Download image"}</button>}
       {busy && !error && <span className="gallery-loading"><Loader label="Loading photo…" /></span>}
       {error && <button className="gallery-status" onClick={() => { setError(false); setRetry((value) => value + 1); }} type="button">Unable to load. Retry</button>}
       {images.length > 1 && <>

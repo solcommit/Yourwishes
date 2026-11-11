@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useBatchPhotos } from "./wish-batch";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { invalidatePrivatePhoto, privatePhoto } from "@/lib/private-photo-cache";
+import { invalidatePrivatePhoto, privatePhotoResource } from "@/lib/private-photo-cache";
 import { Alert, AlertDescription } from "./ui/alert";
 
 export function PrivateWishPhoto({ src, name, list, imageRef }: {
@@ -18,7 +18,7 @@ export function PrivateWishPhoto({ src, name, list, imageRef }: {
   const retry = () => { setState({}); setAttempt((value) => value + 1); };
   useEffect(() => {
     let alive = true;
-    let objectUrl = "";
+    let releasePhoto: (() => void) | undefined;
     const load = async () => {
       setState({ loading: true });
       const requested = (list ? 86 : window.innerWidth < 700 ? 130 : 180) * Math.min(window.devicePixelRatio || 1, 3);
@@ -26,10 +26,10 @@ export function PrivateWishPhoto({ src, name, list, imageRef }: {
       const url = `${src}${src.includes("?") ? "&" : "?"}width=${width}`;
       requestedUrl.current = url;
       try {
-        const blob = await privatePhoto(url);
-        if (!alive) return;
-        objectUrl = URL.createObjectURL(blob);
-        setState({ url: objectUrl, loading: true });
+        const photo = await privatePhotoResource(url);
+        if (!alive) {photo.release();return;}
+        releasePhoto = photo.release;
+        setState({ url: photo.url, loading: false });
       } catch {
         if (!alive) return;
         invalidatePrivatePhoto(url);
@@ -42,10 +42,10 @@ export function PrivateWishPhoto({ src, name, list, imageRef }: {
     }, { rootMargin: "160px" });
     if (batch) queueMicrotask(() => { if (alive) void load(); });
     else if (host.current) observer.observe(host.current);
-    const clear = () => { alive = false; if (objectUrl) URL.revokeObjectURL(objectUrl); setState({}); };
+    const clear = () => { alive = false; releasePhoto?.(); setState({}); };
     window.addEventListener("yourwishes-private-data-cleared", clear);
     window.addEventListener("yourwishes-session-ending", clear);
-    return () => { alive = false; observer.disconnect(); if (objectUrl) URL.revokeObjectURL(objectUrl); window.removeEventListener("yourwishes-private-data-cleared", clear); window.removeEventListener("yourwishes-session-ending", clear); };
+    return () => { alive = false; observer.disconnect(); releasePhoto?.(); window.removeEventListener("yourwishes-private-data-cleared", clear); window.removeEventListener("yourwishes-session-ending", clear); };
   }, [src, list, attempt, batch]);
   return <span ref={host} className="private-wish-photo" data-photo-pending={!state.error && (!state.url || !!state.loading)}>
     {state.url ? <Image ref={imageRef} className="wish-image" src={state.url} alt="" draggable={false} width={720} height={560} unoptimized loading={batch ? "eager" : "lazy"}

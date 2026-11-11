@@ -1,11 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import { Toaster } from "./ui/sonner";
+import { AppMotion } from "./app-motion";
+import { WorkspaceBackground } from "./backgrounds/workspace-background";
+import { CircleLoader } from "./ui/circle-loader";
+import { WishProductActions } from "./wish-product-actions";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, LayoutGroup, animate, motion, useIsPresent, useMotionValueEvent, useScroll, useSpring, useReducedMotion } from "motion/react";
-import { Camera, ChevronLeft, Pencil, Settings2, X } from "lucide-react";
+import { AnimatePresence, LayoutGroup, motion, useIsPresent, useReducedMotion } from "motion/react";
+import { Camera, ChevronLeft, Pencil, Settings2, Trash2, X } from "lucide-react";
 import {
   createContext,
   memo,
@@ -41,7 +46,6 @@ import {
 import { useAppSettings } from "@/components/settings-provider";
 import { ProfilePhotoProvider, useProfilePhoto } from "./profile-photo-provider";
 import { Button, IconButton } from "@/components/ui/button";
-import { WorkspaceBackground } from "./backgrounds/workspace-background";
 import { FormSelect } from "@/components/ui/select";
 import { CURRENCY_OPTIONS, PRIORITY_OPTIONS } from "./wish-form-options";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -74,49 +78,6 @@ export function useWorkspaceActions() {
   const actions = useContext(WorkspaceActionsContext);
   if (!actions) throw new Error("useWorkspaceActions must be used inside AppShell.");
   return actions;
-}
-
-function ScrollBezel() {
-  const { settings } = useAppSettings();
-  const reduceMotion = useReducedMotion();
-  const { scrollY } = useScroll();
-  const scaleX = useSpring(1, { stiffness: 230, damping: 23, mass: 0.35 });
-  const scaleY = useSpring(1, { stiffness: 230, damping: 23, mass: 0.35 });
-  const opacity = useSpring(0, { stiffness: 190, damping: 23 });
-  const previous = useRef({ y: 0, time: 0 });
-  const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useMotionValueEvent(scrollY, "change", (y) => {
-    if (reduceMotion || !settings.scrollBezel || !settings.fluidAnimations) return;
-    const now = performance.now();
-    const elapsed = now - previous.current.time;
-    if (elapsed > 0) {
-      const velocity = (y - previous.current.y) / elapsed;
-      const intensity = Math.min(Math.abs(velocity) / 1.6, 0.45);
-      scaleX.set(1 + intensity);
-      scaleY.set(1 - intensity * 0.38);
-      opacity.set(Math.min(intensity * 0.38, 0.16));
-      if (timeout.current) clearTimeout(timeout.current);
-      timeout.current = setTimeout(() => {
-        animate(scaleX, 1, { type: "spring", stiffness: 230, damping: 23 });
-        animate(scaleY, 1, { type: "spring", stiffness: 230, damping: 23 });
-        animate(opacity, 0, { type: "spring", stiffness: 190, damping: 23 });
-      }, 120);
-    }
-    previous.current = { y, time: now };
-  });
-
-  useEffect(() => () => {
-    if (timeout.current) clearTimeout(timeout.current);
-  }, []);
-
-  if (!settings.fluidAnimations || !settings.scrollBezel) return null;
-  return (
-    <>
-      <motion.div aria-hidden="true" className="scroll-bezel scroll-bezel-left" style={{ scaleX, scaleY, opacity }} />
-      <motion.div aria-hidden="true" className="scroll-bezel scroll-bezel-right" style={{ scaleX, scaleY, opacity }} />
-    </>
-  );
 }
 
 const ProfileControl = memo(function ProfileControl({
@@ -745,9 +706,9 @@ function ItemDetail({
           </dl>
           {error && <p className="form-error" role="alert">Unable to delete wish. Check your connection and retry.</p>}
           <div className="sheet-actions">
-            {item.url && <a className="text-sm text-[var(--interactive)] hover:underline" href={item.url} rel="noreferrer" target="_blank">View product</a>}
-            {remove && <Button disabled={pending} className="mr-auto text-red-600 dark:text-red-400" onClick={remove} variant="ghost">{pending ? "Deleting…" : "Delete"}</Button>}
-            {edit && <Button disabled={pending} onClick={edit} variant="secondary">Edit</Button>}
+            {item.url && <WishProductActions url={item.url} />}
+            {remove && <Button disabled={pending} className="app-button-danger" onClick={remove} variant="secondary"><Trash2 aria-hidden="true" size={17} />{pending ? "Deleting…" : "Delete"}</Button>}
+            {edit && <Button disabled={pending} onClick={edit} variant="secondary"><Pencil aria-hidden="true" size={17} />Edit</Button>}
           </div>
         </motion.div>
       </div>
@@ -816,7 +777,8 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
   const actionsValue = useMemo(() => ({ openAddItem, openItem }), [openAddItem, openItem]);
 
   return (
-    <ProfilePhotoProvider key={userId} userId={userId}>
+    <AppMotion><ProfilePhotoProvider key={userId} userId={userId}>
+    <Toaster />
     <WorkspaceContext.Provider value={contextValue}>
       <WorkspaceActionsContext.Provider value={actionsValue}>
       <LayoutGroup id="yourwishes-shared-elements">
@@ -849,6 +811,7 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
               >
                 {loadingRoute && (
                   <section aria-live="polite" className="py-10 text-sm text-[var(--muted)]">
+                    {loading && <CircleLoader />}
                     {!loading && <><p role="alert">{error}</p><Button className="mt-4" onClick={() => void refresh()} variant="secondary">Retry</Button></>}
                   </section>
                 )}
@@ -865,7 +828,6 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
           </main>
         </div>
         <AppNavigation />
-        <ScrollBezel />
         <AnimatePresence initial={false} onExitComplete={() => { if (!sheet) releaseSource(); }}>
           {sheet === "add" && <ItemForm key="add" close={closeSheet} save={saveItem} />}
           {sheet === "detail" && currentActiveItem && (
@@ -905,6 +867,6 @@ export function AppShell({ children, userId }: { children: ReactNode; userId: st
       </LayoutGroup>
       </WorkspaceActionsContext.Provider>
     </WorkspaceContext.Provider>
-    </ProfilePhotoProvider>
+    </ProfilePhotoProvider></AppMotion>
   );
 }
