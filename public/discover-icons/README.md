@@ -13,3 +13,7 @@ use and provides no advantage for these in-page icons.
 Discover uses a three-column grid. Append method metadata in
 src/lib/discover-icons.ts and implement its screen to add another app-like entry.
 No empty dummy buttons are rendered. Labels stay outside the artwork.
+
+Discover now also has budget, versus, shortlist, occasions and shared entries.
+They currently use Lucide fallback icons. Add local WebP artwork and set each src
+in src/lib/discover-icons.ts when the custom iOS-style assets are ready.

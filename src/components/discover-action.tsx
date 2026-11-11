@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Compass, Sparkles } from "lucide-react";
+import { Compass, Sparkles, Wallet, ArrowLeftRight, Bookmark, CalendarHeart, HeartHandshake } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { DISCOVER_ICONS } from "@/lib/discover-icons";
 import { useAppSettings } from "./settings-provider";
@@ -12,7 +12,7 @@ export function DiscoverAction({icon,label,onClick,disabled=false,compact=false}
   const {settings}=useAppSettings();
   const reduced=useReducedMotion() || !settings.fluidAnimations;
   const src=DISCOVER_ICONS[icon].src;
-  const Icon=icon === "wheel" ? Compass : Sparkles;
+  const Icon=({wheel:Compass,instant:Sparkles,budget:Wallet,versus:ArrowLeftRight,shortlist:Bookmark,occasions:CalendarHeart,shared:HeartHandshake})[icon];
   return <motion.button type="button" aria-label={label} className={`discover-icon-action${compact ? " discover-icon-action-compact" : ""}`}
     disabled={disabled} onClick={onClick} whileHover={reduced || disabled ? undefined : {y:-3}}
     whileTap={reduced || disabled ? undefined : {scale:.94,y:1}}

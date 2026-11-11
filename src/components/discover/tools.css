@@ -1,0 +1,32 @@
+.discover-tools { padding-bottom:36px; }
+.discover-tools > h2 { margin-top:24px; }
+.tool-panel { min-width:0; padding:20px; margin:0 0 18px; border:1px solid var(--control-edge,var(--border)); border-radius:24px; background:var(--control-frame,var(--surface)); box-shadow:inset 0 1px 0 var(--control-highlight,transparent); overflow-wrap:anywhere; }
+.tool-panel h3 { margin:0 0 12px; font-size:16px; font-weight:650; }
+.tool-panel p { font-size:13px; line-height:1.6; }
+.tool-hint { color:var(--muted); font-size:12px; line-height:1.6; }
+.tool-form { display:grid; gap:14px; }
+.tool-form p { margin:0; }
+.tool-form-grid { display:grid; grid-template-columns:minmax(0,1fr) minmax(110px,.6fr); gap:12px; }
+.tool-form :is(input,textarea),.tool-form-grid input { max-width:100%; min-width:0; }
+.tool-form textarea { min-height:80px; }
+.tool-actions { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0 0; }
+.tool-list { display:grid; gap:0; padding:0; margin:18px 0 0; list-style:none; }
+.tool-list li { display:flex; justify-content:space-between; align-items:center; gap:16px; min-height:48px; border-top:1px solid var(--border); padding:10px 0; font-size:13px; }
+.tool-list li span { min-width:0; overflow-wrap:anywhere; }
+.tool-list small { flex-shrink:0; color:var(--muted); }
+.tool-checkbox { display:flex; align-items:center; gap:12px; min-height:44px; font-size:14px; }
+.tool-checkbox input { width:20px; height:20px; flex-shrink:0; accent-color:var(--interactive); }
+.tool-checkbox strong { min-width:0; overflow-wrap:anywhere; }
+.versus-choices { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; margin:20px 0; }
+.versus-choices .app-button { min-height:150px; white-space:normal; overflow-wrap:anywhere; border-radius:26px; padding:18px; }
+.versus-choices small { display:block; color:var(--muted); margin-top:12px; }
+.shared-wish.is-done .tool-checkbox strong { text-decoration:line-through; color:var(--muted); }
+.tool-error { border:1px solid var(--system-red); padding:16px; border-radius:18px; margin:18px 0; font-size:13px; overflow-wrap:anywhere; }
+.occasion-time { display:grid; gap:5px; color:var(--foreground); font-size:22px; font-weight:650; }
+.occasion-time small { color:var(--muted); font-size:12px; font-weight:400; }
+.discover-countdown { display:grid; gap:10px; width:min(100%,420px); min-height:80px; margin:24px auto 0; padding:18px 20px; text-align:left; border:1px solid var(--control-edge,var(--border)); border-radius:24px; background:var(--control-frame,var(--surface)); color:var(--foreground); cursor:pointer; }
+.discover-countdown > span:first-child { font-size:13px; color:var(--muted); overflow-wrap:anywhere; }
+.discover-countdown > small { font-size:12px; color:var(--muted); }
+.discover-countdown:focus-visible,.tool-checkbox input:focus-visible { outline:2px solid var(--ring); outline-offset:4px; }
+.tool-records { display:grid; gap:0; }
+@media(max-width:430px) { .tool-panel { padding:16px; } .tool-form-grid { grid-template-columns:minmax(0,1fr); } .versus-choices { gap:10px; } .versus-choices .app-button { padding:12px; } }

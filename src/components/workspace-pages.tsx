@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { memo, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import {
   ArrowLeft,
@@ -26,9 +27,14 @@ import { PriorityFolders } from "./priority/priority-folders";
 import { WishBatch } from "./wish-batch";
 import { ColourfulText } from "./ui/colourful-text";
 import "./settings-page.css";
-import { DISCOVER_METHODS } from "@/lib/discover-icons";
+import { DiscoverDataProvider } from "./discover/data-provider";
+import { DiscoverOccasionSummary } from "./discover/countdown";
+import { DISCOVER_METHODS, type DiscoverMode } from "@/lib/discover-icons";
+import { WheelWishSelector } from "./wheel-wish-selector";
 import { DiscoverAction } from "./discover-action";
 import { wishLayoutTransition } from "@/lib/wish-transition";
+
+const DiscoverTools=dynamic(()=>import("./discover/tools").then(module=>module.DiscoverTools),{loading:()=> <p role="status">Loading Discover tools…</p>});
 
 function PageTitle({ children }: { children: ReactNode }) {
   return <h1 className="page-title">{children}</h1>;
@@ -155,10 +161,14 @@ export function WishlistPage({ owner }: { owner: WishlistItem["owner"] }) {
 }
 
 export function DiscoverPage() {
-  const { items } = useWorkspace();
+  const { items,userId } = useWorkspace();
   const { settings } = useAppSettings();
   const partnerWishes = items.filter((item) => item.owner === "partner");
-  const [screen, setScreen] = useState<"select" | "wheel" | "instant">("select");
+  const [screen, setScreen] = useState<"select" | DiscoverMode>("select");
+  const [selectedWishIds, setSelectedWishIds] = useState<Set<string> | null>(null);
+  const wheelWishes = partnerWishes.filter(item => selectedWishIds === null || selectedWishIds.has(item.id));
+  const wheelPoolIds = wheelWishes.map(item=>item.id).join(",");
+  const previousWheelPoolIds = useRef(wheelPoolIds);
   const [instantResult, setInstantResult] = useState<WishlistItem | null>(null);
   const [instantRevealId, setInstantRevealId] = useState(0);
   const [confettiVisible, setConfettiVisible] = useState(false);
@@ -173,8 +183,8 @@ export function DiscoverPage() {
   const reduceMotion = useReducedMotion() || !settings.fluidAnimations;
   const partnerIds = partnerWishes.map((item) => item.id).join(",");
   const previousPartnerIds = useRef(partnerIds);
-  const currentInstantResult = partnerWishes.find((item) => item.id === instantResult?.id) ?? null;
-  const currentWheelResult = partnerWishes.find((item) => item.id === wheelResult?.id) ?? null;
+  const currentInstantResult = wheelWishes.find((item) => item.id === instantResult?.id) ?? null;
+  const currentWheelResult = wheelWishes.find((item) => item.id === wheelResult?.id) ?? null;
 
   useEffect(() => {
     if (previousPartnerIds.current === partnerIds) return;
@@ -186,14 +196,24 @@ export function DiscoverPage() {
     setSpinning(false); setRestoringWheel(false);
   }, [partnerIds]);
 
+  useEffect(() => {
+    if(previousWheelPoolIds.current===wheelPoolIds)return;
+    previousWheelPoolIds.current=wheelPoolIds;
+    if(spinTimeout.current)clearTimeout(spinTimeout.current);
+    spinTimeout.current=null;
+    setWheelResult(null);setPendingWheelResult(null);setSpinning(false);setRestoringWheel(false);setRotation(0);
+    setInstantResult(null);setConfettiVisible(false);
+    if(confettiTimeout.current)clearTimeout(confettiTimeout.current);
+  },[wheelPoolIds]);
+
   useEffect(() => () => {
     if (spinTimeout.current) clearTimeout(spinTimeout.current);
     if (confettiTimeout.current) clearTimeout(confettiTimeout.current);
   }, []);
 
   function chooseInstant() {
-    if (!partnerWishes.length) return;
-    setInstantResult(partnerWishes[randomIndex(partnerWishes.length)]);
+    if (!wheelWishes.length) return;
+    setInstantResult(wheelWishes[randomIndex(wheelWishes.length)]);
     setInstantRevealId((current) => current + 1);
     setConfettiVisible(!reduceMotion);
 
@@ -205,10 +225,10 @@ export function DiscoverPage() {
   }
 
   function startSpin() {
-    if (!partnerWishes.length || spinning) return;
-    const winnerIndex = randomIndex(partnerWishes.length);
-    const winner = partnerWishes[winnerIndex];
-    const segmentAngle = 360 / partnerWishes.length;
+    if (!wheelWishes.length || spinning) return;
+    const winnerIndex = randomIndex(wheelWishes.length);
+    const winner = wheelWishes[winnerIndex];
+    const segmentAngle = 360 / wheelWishes.length;
     const desiredAngle = ((360 - ((winnerIndex + 0.5) * segmentAngle) % 360) + 360) % 360;
     const currentAngle = ((rotation % 360) + 360) % 360;
     const alignment = (desiredAngle - currentAngle + 360) % 360;
@@ -227,7 +247,7 @@ export function DiscoverPage() {
   }
 
   function spinWheel() {
-    if (spinning || restoringWheel) return;
+    if (!wheelWishes.length || spinning || restoringWheel) return;
     if (!wheelResult) {
       startSpin();
       return;
@@ -242,7 +262,7 @@ export function DiscoverPage() {
   }
 
   return (
-    <div className="page-enter">
+    <DiscoverDataProvider key={userId} userId={userId}><div className="page-enter">
       <div className="desktop-page-heading">
         <PageTitle>Discover</PageTitle>
       </div>
@@ -259,6 +279,7 @@ export function DiscoverPage() {
             <div className="discovery-method-list">
               {DISCOVER_METHODS.map(method => <DiscoverAction key={method.id} icon={method.icon} label={method.label} onClick={() => setScreen(method.id)} />)}
             </div>
+            <DiscoverOccasionSummary open={()=>setScreen("occasions")} />
           </motion.section>
         )}
         {screen === "wheel" && (
@@ -283,10 +304,12 @@ export function DiscoverPage() {
               <ChevronLeft aria-hidden="true" className="size-4" /> Choose a method
             </button>
             <h2>Spin the Wheel</h2>
-            {partnerWishes.length ? (
+            <WheelWishSelector items={partnerWishes} selected={selectedWishIds} onChange={setSelectedWishIds} disabled={spinning || restoringWheel} />
+            {!wheelWishes.length && <p className="wheel-empty">{partnerWishes.length ? "Choose at least one wish above." : "Your partner has no wishes yet."}</p>}
+            {wheelWishes.length ? (
               <>
                 <PrizeWheel
-                  items={partnerWishes}
+                  items={wheelWishes}
                   rotation={rotation}
                   spinDuration={spinDuration}
                   reduceMotion={reduceMotion}
@@ -300,7 +323,7 @@ export function DiscoverPage() {
                       !("rotate" in definition) ||
                       definition.rotate !== rotation
                     ) return;
-                    if (!pendingWheelResult) return;
+                    if (!pendingWheelResult || !wheelWishes.some(item=>item.id===pendingWheelResult.id)) return;
                     const winner = pendingWheelResult;
                     setPendingWheelResult(null);
                     setSpinning(false);
@@ -320,7 +343,7 @@ export function DiscoverPage() {
                   <Button disabled={spinning || restoringWheel} onClick={spinWheel}>Spin</Button>
                 </div>
               </>
-            ) : null}
+            ) : <div className="discovery-wheel-actions"><Button disabled>Spin</Button></div>}
           </motion.section>
         )}
         {screen === "instant" && (
@@ -336,7 +359,8 @@ export function DiscoverPage() {
               <ChevronLeft aria-hidden="true" className="size-4" /> Choose a method
             </button>
             <h2>Instant Pick</h2>
-            <div className="discovery-instant-actions"><Button disabled={!partnerWishes.length} onClick={chooseInstant}>Pick</Button></div>
+            <WheelWishSelector items={partnerWishes} selected={selectedWishIds} onChange={setSelectedWishIds} disabled={false} action="pick" />
+            <div className="discovery-instant-actions"><Button disabled={!wheelWishes.length} onClick={chooseInstant}>Pick</Button></div>
             <AnimatePresence mode="wait" initial={false}>
               {currentInstantResult && (
                 <motion.div
@@ -356,8 +380,11 @@ export function DiscoverPage() {
             </AnimatePresence>
           </motion.section>
         )}
+        {screen!=="select"&&screen!=="wheel"&&screen!=="instant"&&<motion.div key="tools" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:reduceMotion?0:.18}}>
+          <DiscoverTools mode={screen} items={items} back={()=>setScreen("select")} onUseCandidates={(candidates,method)=>{setSelectedWishIds(new Set(candidates.map(item=>item.id)));setScreen(method);}} />
+        </motion.div>}
       </AnimatePresence>
-    </div>
+    </div></DiscoverDataProvider>
   );
 }
 
